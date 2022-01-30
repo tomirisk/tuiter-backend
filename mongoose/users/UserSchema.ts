@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import Location from "../models/Location";
-import User from "../models/User";
-import AccountType from "../models/AccountType";
-import MaritalStatus from "../models/MaritalStatus";
+import Location from "../../models/users/Location";
+import User from "../../models/users/User";
+import AccountType from "../../models/users/AccountType";
+import MaritalStatus from "../../models/users/MaritalStatus";
 const UserSchema = new mongoose.Schema<User>({
     username: {type: String, required: true},
     password: {type: String, required: true},
     firstName: String,
     lastName: String,
-    email: String,
+    email: {type: String, required: true},
     profilePhoto: String,
     headerImage: String,
     accountType: {type: String, default: AccountType.Personal, enum: AccountType},
