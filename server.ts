@@ -5,7 +5,12 @@ import UserController from './controllers/UserController';
 import TuitController from "./controllers/TuitController";
 import mongoose from 'mongoose';
 const app = express();
-mongoose.connect('mongodb://localhost:27017/tuiter');
+
+const DB_USERNAME = process.env.DB_USERNAME;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+
+const connectionString = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.ry4vp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+mongoose.connect(connectionString);
 
 app.use(express.json());
 
@@ -17,11 +22,8 @@ app.get('/add/:a/:b', (req, res) => {
     res.send(req.params.a + req.params.b);
 });
 
-const userDao = new UserDao();
-const userController = new UserController(app, userDao);
-
-const tuitDao = new TuitDao();
-const tuitController = new TuitController(app, tuitDao);
+const userController = new UserController(app, new UserDao());
+const tuitController = new TuitController(app, new TuitDao());
 
 const PORT = 4000;
 app.listen(process.env.PORT || PORT);
