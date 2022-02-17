@@ -1,31 +1,50 @@
-import Tuit from "../models/tuits/Tuit";
+/**
+ * @file Implements DAO managing data storage of tuits. Uses mongoose TuitModel
+ * to integrate with MongoDB
+ */
 import TuitModel from "../mongoose/tuits/TuitModel";
-import TuitDaoI from "../interfaces/TuitDao";
+import Tuit from "../models/tuits/Tuit";
+import TuitDaoI from "../interfaces/TuitDaoI";
 
+/**
+ * @class TuitDao Implements Data Access Object managing data storage
+ * of Tuits
+ * @property {TuitDao} userDao Private single instance of TuitDao
+ */
 export default class TuitDao implements TuitDaoI {
+    private static tuitDao: TuitDao | null = null;
 
-    async findAllTuits(): Promise<Tuit[]> {
-        return await TuitModel.find().populate("postedBy").exec();
+    public static getInstance = (): TuitDao => {
+        if(TuitDao.tuitDao === null) {
+            TuitDao.tuitDao = new TuitDao();
+        }
+        return TuitDao.tuitDao;
     }
 
-    async findTuitsByUser(uid: string): Promise<Tuit[]> {
-        return await TuitModel.find({postedBy : uid}).exec();
+    private constructor() {}
+
+    findAllTuits = async (): Promise<Tuit[]> => {
+        return TuitModel.find().populate("postedBy");
     }
 
-    async findTuitById(tid: string): Promise<any> {
-        return await TuitModel.findById(tid).populate("postedBy").exec();
+    findAllTuitsByUser = async (uid: string): Promise<Tuit[]> => {
+        return TuitModel.find({postedBy : uid});
     }
 
-    async createTuit(uid: string, tuit: Tuit): Promise<Tuit> {
-        return await TuitModel.create({...tuit, postedBy: uid});
+    findTuitById = async (tid: string): Promise<any> => {
+        return TuitModel.findById(tid).populate("postedBy");
     }
 
-    async updateTuit(tid: string, tuit: Tuit):  Promise<any> {
-        return await TuitModel.updateOne({_id: tid}, {$set: tuit}).exec();
+    createTuitByUser = async (uid: string, tuit: Tuit): Promise<Tuit> => {
+        return TuitModel.create({...tuit, postedBy: uid});
     }
 
-    async deleteTuit(tid: string): Promise<any> {
-        return await TuitModel.deleteOne({_id: tid}).exec();
+    updateTuit = async (tid: string, tuit: Tuit):  Promise<any> => {
+        return TuitModel.updateOne({_id: tid}, {$set: tuit});
+    }
+
+    deleteTuit = async (tid: string): Promise<any> => {
+        return TuitModel.deleteOne({_id: tid});
     }
 }
 
