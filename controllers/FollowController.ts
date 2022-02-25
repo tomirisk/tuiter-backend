@@ -4,6 +4,7 @@
 import {Express, Request, Response} from "express";
 import FollowDao from "../daos/FollowDao";
 import FollowControllerI from "../interfaces/FollowControllerI";
+import Follow from "../models/follows/Follow";
 
 /**
  * @class FollowController Implements RESTful Web service API for likes resource.
@@ -48,7 +49,7 @@ export default class FollowController implements FollowControllerI {
      * body formatted as JSON arrays containing the user objects that follow
      */
     findAllUsersThatFollowUser = (req: Request, res: Response) =>
-        FollowController.followDao.findAllUsersThatFollowUser(req.params.uid).then(follows => res.json(follows));
+        FollowController.followDao.findAllUsersThatFollowUser(req.params.uid).then((follows: Follow[]) => res.json(follows));
 
     /**
      * Retrieves all users followed by a user from the database
@@ -58,7 +59,7 @@ export default class FollowController implements FollowControllerI {
      * body formatted as JSON arrays containing the user objects that are followed
      */
     findAllUsersFollowedByUser = (req: Request, res: Response) =>
-        FollowController.followDao.findAllUsersFollowedByUser(req.params.uid).then(follows => res.json(follows));
+        FollowController.followDao.findAllUsersFollowedByUser(req.params.uid).then((follows: Follow[]) => res.json(follows));
 
     /**
      * Creates a new follow instance representing a user following another user
@@ -69,7 +70,7 @@ export default class FollowController implements FollowControllerI {
      * database
      */
     userFollowsUser = (req: Request, res: Response) =>
-        FollowController.followDao.userFollowsUser(req.params.userFollowed, req.params.uid).then(follows => res.json(follows));
+        FollowController.followDao.userFollowsUser(req.params.userFollowed, req.params.uid).then((follow: Follow) => res.json(follow));
 
     /**
      * Removes a like instance from the database

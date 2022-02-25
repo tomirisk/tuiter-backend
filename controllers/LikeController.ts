@@ -4,6 +4,7 @@
 import {Express, Request, Response} from "express";
 import LikeDao from "../daos/LikeDao";
 import LikeControllerI from "../interfaces/LikeControllerI";
+import Like from "../models/likes/Like";
 
 /**
  * @class LikeController Implements RESTful Web service API for likes resource.
@@ -48,7 +49,7 @@ export default class LikeController implements LikeControllerI {
      * body formatted as JSON arrays containing the user objects
      */
     findAllUsersThatLikedTuit = (req: Request, res: Response) =>
-        LikeController.likeDao.findAllUsersThatLikedTuit(req.params.tid).then(likes => res.json(likes));
+        LikeController.likeDao.findAllUsersThatLikedTuit(req.params.tid).then((likes: Like[]) => res.json(likes));
 
     /**
      * Retrieves all tuits liked by a user from the database
@@ -58,7 +59,7 @@ export default class LikeController implements LikeControllerI {
      * body formatted as JSON arrays containing the tuit objects that were liked
      */
     findAllTuitsLikedByUser = (req: Request, res: Response) =>
-        LikeController.likeDao.findAllTuitsLikedByUser(req.params.uid).then(likes => res.json(likes));
+        LikeController.likeDao.findAllTuitsLikedByUser(req.params.uid).then((likes: Like[]) => res.json(likes));
 
     /**
      * Creates a new like instance representing a tuit liked by a user
@@ -70,7 +71,7 @@ export default class LikeController implements LikeControllerI {
      * database
      */
     userLikesTuit = (req: Request, res: Response) =>
-        LikeController.likeDao.userLikesTuit(req.params.uid, req.params.tid).then(likes => res.json(likes));
+        LikeController.likeDao.userLikesTuit(req.params.uid, req.params.tid).then((like: Like) => res.json(like));
 
     /**
      * Removes a like instance from the database
