@@ -4,6 +4,7 @@
 import {Express, Request, Response} from "express";
 import BookmarkDao from "../daos/BookmarkDao";
 import BookmarkControllerI from "../interfaces/BookmarkControllerI";
+import Bookmark from "../models/bookmarks/Bookmark";
 
 /**
  * @class BookmarkController Implements RESTful Web service API for likes resource.
@@ -48,7 +49,7 @@ export default class BookmarkController implements BookmarkControllerI {
      * body formatted as JSON arrays containing the tuit objects that were bookmarked
      */
     findAllTuitsBookmarkedByUser = (req: Request, res: Response) =>
-        BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(req.params.uid).then(likes => res.json(likes));
+        BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(req.params.uid).then((bookmarks: Bookmark[]) => res.json(bookmarks));
 
     /**
      * Retrieves all user that bookmarked a tuit from the database
@@ -58,7 +59,7 @@ export default class BookmarkController implements BookmarkControllerI {
      * body formatted as JSON arrays containing the user objects
      */
     findAllUsersThatBookmarkedTuit = (req: Request, res: Response) =>
-        BookmarkController.bookmarkDao.findAllUsersThatBookmarkedTuit(req.params.tid).then(likes => res.json(likes));
+        BookmarkController.bookmarkDao.findAllUsersThatBookmarkedTuit(req.params.tid).then((bookmarks: Bookmark[]) => res.json(bookmarks));
 
     /**
      * Creates a new bookmark instance representing a tuit bookmarked by a user
@@ -70,7 +71,7 @@ export default class BookmarkController implements BookmarkControllerI {
      * database
      */
     userBookmarksTuit = (req: Request, res: Response) =>
-        BookmarkController.bookmarkDao.userBookmarksTuit(req.params.uid, req.params.tid).then(likes => res.json(likes));
+        BookmarkController.bookmarkDao.userBookmarksTuit(req.params.uid, req.params.tid).then((bookmark: Bookmark) => res.json(bookmark));
 
     /**
      * Removes a bookmark instance from the database

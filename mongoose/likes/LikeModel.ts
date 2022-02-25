@@ -3,6 +3,6 @@
  */
 import mongoose from "mongoose";
 import LikeSchema from "./LikeSchema";
-import Like from "../../models/likes/like";
+import Like from "../../models/likes/Like";
 const LikeModel = mongoose.model<Like>("LikeModel", LikeSchema);
 export default LikeModel;

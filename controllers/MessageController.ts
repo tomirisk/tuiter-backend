@@ -4,6 +4,7 @@
 import {Express, Request, Response} from "express";
 import MessageDao from "../daos/MessageDao";
 import MessageControllerI from "../interfaces/MessageControllerI";
+import Message from "../models/messages/Message";
 
 /**
  * @class MessageController Implements RESTful Web service API for messages resource.
@@ -54,7 +55,7 @@ export default class MessageController implements MessageControllerI {
      * body formatted as JSON arrays containing the message objects
      */
     findAllMessagesReceivedByUser = (req: Request, res: Response) =>
-        MessageController.messageDao.findAllMessagesReceivedByUser(req.params.uid).then(messages => res.json(messages));
+        MessageController.messageDao.findAllMessagesReceivedByUser(req.params.uid).then((messages: Message[]) => res.json(messages));
 
     /**
      * Retrieves all messages sent by a user from the database
@@ -64,7 +65,7 @@ export default class MessageController implements MessageControllerI {
      * body formatted as JSON arrays containing the message objects
      */
     findAllMessagesSentByUser = (req: Request, res: Response) =>
-        MessageController.messageDao.findAllMessagesSentByUser(req.params.uid).then(messages => res.json(messages));
+        MessageController.messageDao.findAllMessagesSentByUser(req.params.uid).then((messages: Message[]) => res.json(messages));
 
     /**
      * Creates a new message instance representing a message sent by a user to another user
@@ -75,7 +76,7 @@ export default class MessageController implements MessageControllerI {
      * database
      */
     sendMessage = (req: Request, res: Response) =>
-        MessageController.messageDao.sendMessage(req.params.uid, req.body).then(messages => res.json(messages));
+        MessageController.messageDao.sendMessage(req.params.uid, req.body).then((message: Message) => res.json(message));
 
     /**
      * Removes a message instance from the database
