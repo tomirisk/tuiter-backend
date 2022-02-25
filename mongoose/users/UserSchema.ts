@@ -1,21 +1,25 @@
+/**
+ * @file Implements mongoose schema to CRUD to represent users.
+ */
 import mongoose from "mongoose";
 import Location from "../../models/users/Location";
 import User from "../../models/users/User";
 import AccountType from "../../models/users/AccountType";
 import MaritalStatus from "../../models/users/MaritalStatus";
 const UserSchema = new mongoose.Schema<User>({
-    username: {type: String, required: true},
-    password: {type: String, required: true},
+    username: {type: String, required: true, default: `testusername${Date.now()}`},
+    password: {type: String, required: true, default: `testpassword${Date.now()}`},
     firstName: String,
     lastName: String,
-    email: {type: String, required: true},
+    email: {type: String, required: true, default: `testemail${Date.now()}`},
     profilePhoto: String,
     headerImage: String,
-    accountType: {type: String, default: AccountType.Personal, enum: AccountType},
-    maritalStatus: {type: String, default: MaritalStatus.Single, enum: MaritalStatus},
     biography: String,
     dateOfBirth: Date,
-    joined: {type: Date, default: Date.now},
-    location: new mongoose.Schema<Location>({latitude: Number, longitude: Number})
+    accountType: {type: String, enum: AccountType},
+    maritalStatus: {type: String, enum: MaritalStatus},
+    location: new mongoose.Schema<Location>({latitude: Number, longitude: Number}),
+    salary: {type: Number, default: 50000}
 }, {collection: 'users'});
+
 export default UserSchema;
