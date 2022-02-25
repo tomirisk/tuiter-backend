@@ -1,3 +1,6 @@
+/**
+ * @file Implements mongoose schema to CRUD to represent users.
+ */
 import mongoose from "mongoose";
 import Location from "../../models/users/Location";
 import User from "../../models/users/User";

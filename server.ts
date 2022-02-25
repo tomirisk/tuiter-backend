@@ -5,43 +5,64 @@
  *     <li>users</li>
  *     <li>tuits</li>
  *     <li>likes</li>
+ *     <li>follows</li>
+ *     <li>bookmarks</li>
+ *     <li>messages</li>
  * </ul>
  *
  * Connects to a remote MongoDB instance hosted on the Atlas cloud database
  * service
  */
+import 'dotenv/config'
 import express, {Request, Response} from 'express';
 import UserController from './controllers/UserController';
 import TuitController from "./controllers/TuitController";
 import LikeController from "./controllers/LikeController";
 import mongoose from 'mongoose';
+import FollowController from "./controllers/FollowController";
+import BookmarkController from "./controllers/BookmarkController";
+import MessageController from "./controllers/MessageController";
 
-// build the connection string
+/**
+ * Constants for database connection
+ */
 const PROTOCOL = "mongodb+srv";
 const DB_USERNAME = process.env.DB_USERNAME;
 const DB_PASSWORD = process.env.DB_PASSWORD;
-const HOST = "cluster0.ry4vp.mongodb.net";
+const DB_HOST = process.env.DB_HOST;
 const DB_NAME = "myFirstDatabase";
 const DB_QUERY = "retryWrites=true&w=majority";
 
-const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${HOST}/${DB_NAME}?${DB_QUERY}`;
+/**
+ * @const {string} Represents the connection string for MongoDB Atlas connection
+ */
+const connectionString = `${PROTOCOL}://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}?${DB_QUERY}`;
 mongoose.connect(connectionString);
 
+/**
+ * @const {Express} Represents the Express App
+ */
 const app = express();
 app.use(express.json());
 
+/**
+ * Route to check if service is running
+ * @param {string} path Base path of API
+ * @param {callback} middleware Express middleware
+ */
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World!')
+    res.send('Running!')
 });
 
-app.get('/add/:a/:b', (req: Request, res: Response) => {
-    res.send(req.params.a + req.params.b);
-});
-
-// create RESTful Web service API
+/**
+ * Create RESTful Web service API
+ */
 UserController.getInstance(app);
 TuitController.getInstance(app);
 LikeController.getInstance(app);
+FollowController.getInstance(app);
+BookmarkController.getInstance(app);
+MessageController.getInstance(app);
 
 /**
  * Start a server listening at port 4000 locally

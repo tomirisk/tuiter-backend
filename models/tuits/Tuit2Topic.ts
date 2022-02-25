@@ -1,3 +1,6 @@
+/**
+ * @file Implements model to represent mapping between tuits and topics.
+ */
 import Topic from "./Topic";
 import Tuit from "./Tuit";
 

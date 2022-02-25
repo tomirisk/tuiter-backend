@@ -1,8 +1,11 @@
+/**
+ * @file Implements mongoose schema to represent tuits.
+ */
 import mongoose from "mongoose";
 import Tuit from "../../models/tuits/Tuit";
 const TuitSchema = new mongoose.Schema<Tuit>({
     tuit: {type: String, required: true},
-    postedBy: {type: mongoose.Schema.Types.ObjectId, ref: "UserModel"},
+    postedBy: {type: mongoose.Schema.Types.ObjectId, ref: "UserModel", required: true},
     postedOn: {type: Date, default: Date.now}
 }, {collection: 'tuits'});
 
