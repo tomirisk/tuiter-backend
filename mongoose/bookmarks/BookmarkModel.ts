@@ -3,6 +3,5 @@
  */
 import mongoose from "mongoose";
 import BookmarkSchema from "./BookmarkSchema";
-import Bookmark from "../../models/bookmarks/Bookmark";
-const BookmarkModel = mongoose.model<Bookmark>("BookmarkModel", BookmarkSchema);
+const BookmarkModel = mongoose.model("BookmarkModel", BookmarkSchema);
 export default BookmarkModel;

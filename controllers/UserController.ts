@@ -65,7 +65,7 @@ export default class UserController implements UserControllerI {
      * body formatted as JSON containing the user that matches the user ID
      */
     findUserById = (req: Request, res: Response) =>
-        UserController.userDao.findUserById(req.params.userid).then((user: User) => res.json(user));
+        UserController.userDao.findUserById(req.params.uid).then((user: User) => res.json(user));
 
     /**
      * Creates a new user instance
@@ -87,7 +87,7 @@ export default class UserController implements UserControllerI {
      * on whether updating a user was successful or not
      */
     updateUser = (req: Request, res: Response) =>
-        UserController.userDao.updateUser(req.params.userid, req.body).then(status => res.json(status));
+        UserController.userDao.updateUser(req.params.uid, req.body).then(status => res.json(status));
 
     /**
      * Removes a user instance from the database
@@ -97,7 +97,7 @@ export default class UserController implements UserControllerI {
      * on whether deleting a user was successful or not
      */
     deleteUser = (req: Request, res: Response) =>
-        UserController.userDao.deleteUser(req.params.userid).then(status => res.json(status));
+        UserController.userDao.deleteUser(req.params.uid).then(status => res.json(status));
 
     /**
      * Removes all user instances from the database. Useful for testing

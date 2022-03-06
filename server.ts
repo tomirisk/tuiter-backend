@@ -15,10 +15,11 @@
  */
 import 'dotenv/config'
 import express, {Request, Response} from 'express';
+import mongoose from 'mongoose';
+import cors from "cors";
 import UserController from './controllers/UserController';
 import TuitController from "./controllers/TuitController";
 import LikeController from "./controllers/LikeController";
-import mongoose from 'mongoose';
 import FollowController from "./controllers/FollowController";
 import BookmarkController from "./controllers/BookmarkController";
 import MessageController from "./controllers/MessageController";
@@ -44,6 +45,8 @@ mongoose.connect(connectionString);
  */
 const app = express();
 app.use(express.json());
+
+app.use(cors());
 
 /**
  * Route to check if service is running
