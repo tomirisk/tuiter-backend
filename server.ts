@@ -17,12 +17,14 @@ import 'dotenv/config'
 import express, {Request, Response} from 'express';
 import mongoose from 'mongoose';
 import cors from "cors";
-import UserController from './controllers/UserController';
-import TuitController from "./controllers/TuitController";
-import LikeController from "./controllers/LikeController";
-import FollowController from "./controllers/FollowController";
-import BookmarkController from "./controllers/BookmarkController";
-import MessageController from "./controllers/MessageController";
+const session = require("express-session");
+import UserController from './controllers/user-controller';
+import TuitController from "./controllers/tuit-controller";
+import LikeController from "./controllers/like-controller";
+import FollowController from "./controllers/follow-controller";
+import BookmarkController from "./controllers/bookmark-controller";
+import MessageController from "./controllers/message-controller";
+import AuthenticationController from "./controllers/auth-controller";
 
 /**
  * Constants for database connection
@@ -44,9 +46,28 @@ mongoose.connect(connectionString);
  * @const {Express} Represents the Express App
  */
 const app = express();
-app.use(express.json());
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000'
+}));
 
-app.use(cors());
+const SECRET = 'process.env.SECRET';
+let sess = {
+    secret: SECRET,
+    saveUninitialized: true,
+    resave: true,
+    cookie: {
+        secure: false
+    }
+}
+
+if (process.env.ENVIRONMENT === 'PRODUCTION') {
+    app.set('trust proxy', 1) // trust first proxy
+    sess.cookie.secure = true // serve secure cookies
+}
+
+app.use(session(sess));
+app.use(express.json());
 
 /**
  * Route to check if service is running
@@ -66,6 +87,7 @@ LikeController.getInstance(app);
 FollowController.getInstance(app);
 BookmarkController.getInstance(app);
 MessageController.getInstance(app);
+AuthenticationController(app);
 
 /**
  * Start a server listening at port 4000 locally
@@ -73,5 +95,3 @@ MessageController.getInstance(app);
  */
 const PORT = 4000;
 app.listen(process.env.PORT || PORT);
-
-
