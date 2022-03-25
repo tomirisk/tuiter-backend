@@ -25,6 +25,7 @@ import FollowController from "./controllers/follow-controller";
 import BookmarkController from "./controllers/bookmark-controller";
 import MessageController from "./controllers/message-controller";
 import AuthenticationController from "./controllers/auth-controller";
+import DislikeController from "./controllers/dislike-controller";
 
 /**
  * Constants for database connection
@@ -88,6 +89,7 @@ FollowController.getInstance(app);
 BookmarkController.getInstance(app);
 MessageController.getInstance(app);
 AuthenticationController(app);
+DislikeController.getInstance(app);
 
 /**
  * Start a server listening at port 4000 locally
