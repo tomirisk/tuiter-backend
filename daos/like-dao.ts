@@ -33,7 +33,7 @@ export default class LikeDao implements LikeDaoI {
      * @returns Promise To be notified when the likes are retrieved from database
      */
     findAllUsersThatLikedTuit = async (tid: string): Promise<Like[]> => {
-        return LikeModel.find({tuit: tid}).populate("likedBy");
+        return LikeModel.find({tuit: tid}).populate("likedBy").exec();
     }
 
     /**
@@ -42,7 +42,7 @@ export default class LikeDao implements LikeDaoI {
      * @returns Promise To be notified when the likes are retrieved from database
      */
     findAllTuitsLikedByUser = async (uid: string): Promise<Like[]> => {
-        return LikeModel.find({likedBy: uid}).populate("tuit");
+        return LikeModel.find({likedBy: uid}).populate("tuit").exec();
     }
 
     /**
@@ -64,4 +64,21 @@ export default class LikeDao implements LikeDaoI {
     userUnlikesTuit = async (uid: string, tid: string): Promise<any> => {
         return LikeModel.deleteOne({tuit: tid, likedBy: uid});
     }
+
+    /**
+     * Finds if a user has liked a tuit
+     * @param {string} uid User's primary key
+     * @param {string} tid Tuit's primary key
+     * @returns Promise To be notified when like is retrieved from database
+     */
+    findUserLikesTuit = async (uid: string, tid: string): Promise<any> =>
+        LikeModel.findOne({tuit: tid, likedBy: uid});
+
+    /**
+     * Uses LikeModel to retrieve count of users that liked a tuit from likes collection
+     * @param {string} tid Tuit's primary key
+     * @returns Promise To be notified when the likes are retrieved from database
+     */
+    countHowManyLikedTuit = async (tid: string): Promise<any> =>
+        LikeModel.count({tuit: tid});
 }
