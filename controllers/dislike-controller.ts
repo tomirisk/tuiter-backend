@@ -67,12 +67,16 @@ export default class DislikeController implements DislikeControllerI {
         const profile = req.session['profile'];
         const userId = uid === "me" && profile ? profile._id : uid;
 
-        DislikeController.dislikeDao.findAllTuitsDislikedByUser(userId)
-            .then((dislikes: Dislike[]) => {
-                const dislikesNonNullTuits = dislikes.filter(dislike => dislike.tuit);
-                const tuitsFromDislikes = dislikesNonNullTuits.map(dislike => dislike.tuit);
-                res.json(tuitsFromDislikes);
-            });
+        try {
+            DislikeController.dislikeDao.findAllTuitsDislikedByUser(userId)
+                .then((dislikes: Dislike[]) => {
+                    const dislikesNonNullTuits = dislikes.filter(dislike => dislike.tuit);
+                    const tuitsFromDislikes = dislikesNonNullTuits.map(dislike => dislike.tuit);
+                    res.json(tuitsFromDislikes);
+                });
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     /**
@@ -87,6 +91,7 @@ export default class DislikeController implements DislikeControllerI {
         // @ts-ignore
         const profile = req.session['profile'];
         const userId = uid === "me" && profile ? profile._id : uid;
+
         try {
             const userAlreadyLikedTuit = await DislikeController.likeDao.findUserLikesTuit(userId, tid);
             const howManyLikedTuit = await DislikeController.likeDao.countHowManyLikedTuit(tid);

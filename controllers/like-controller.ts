@@ -66,12 +66,16 @@ export default class LikeController implements LikeControllerI {
         const profile = req.session['profile'];
         const userId = uid === "me" && profile ? profile._id : uid;
 
-        LikeController.likeDao.findAllTuitsLikedByUser(userId)
-            .then(likes => {
-                const likesNonNullTuits = likes.filter(like => like.tuit);
-                const tuitsFromLikes = likesNonNullTuits.map(like => like.tuit);
-                res.json(tuitsFromLikes);
-            });
+        try {
+            LikeController.likeDao.findAllTuitsLikedByUser(userId)
+                .then(likes => {
+                    const likesNonNullTuits = likes.filter(like => like.tuit);
+                    const tuitsFromLikes = likesNonNullTuits.map(like => like.tuit);
+                    res.json(tuitsFromLikes);
+                });
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     /**

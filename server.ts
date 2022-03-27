@@ -58,13 +58,14 @@ app.use(cors({
     ]
 }));
 
-const SECRET = 'process.env.SECRET';
+const SECRET = process.env.SECRET;
 let sess = {
     secret: SECRET,
     saveUninitialized: true,
     resave: true,
     cookie: {
-        secure: false
+        secure: false,
+        sameSite: 'none'
     }
 }
 
