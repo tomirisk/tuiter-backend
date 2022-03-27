@@ -49,7 +49,13 @@ mongoose.connect(connectionString);
 const app = express();
 app.use(cors({
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost']
+    origin: [
+        'http://localhost:3000',
+        'http://localhost',
+        'https://dazzling-ride-a80508.netlify.app',
+        'https://a4--dazzling-ride-a80508.netlify.app',
+        'https://my-dislikes-screen--dazzling-ride-a80508.netlify.app'
+    ]
 }));
 
 const SECRET = 'process.env.SECRET';
