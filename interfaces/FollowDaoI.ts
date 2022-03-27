@@ -1,4 +1,4 @@
-import Follow from "../models/follows/Follow";
+import Follow from "../models/follows/follow";
 
 /**
  * @file Declares API for Follows related data access object methods

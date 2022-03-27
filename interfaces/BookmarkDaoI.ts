@@ -1,4 +1,4 @@
-import Bookmark from "../models/bookmarks/Bookmark";
+import Bookmark from "../models/bookmarks/bookmark";
 
 /**
  * @file Declares API for Bookmarks related data access object methods

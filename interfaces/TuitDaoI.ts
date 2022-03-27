@@ -1,4 +1,4 @@
-import Tuit from "../models/tuits/Tuit";
+import Tuit from "../models/tuits/tuit";
 import Stats from "../models/tuits/stats";
 
 /**
