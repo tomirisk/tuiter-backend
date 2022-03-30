@@ -1,8 +1,8 @@
 /**
  * @file Declares Message data type representing relationship between users, as in user messages another user
  */
-import User from "../users/user";
-import mongoose from "mongoose";
+import User from "../users/User";
+import AttachmentType from "./AttachmentType";
 
 /**
  * @typedef Message Represents messages relationship between two users, as in a user messages another user
@@ -12,9 +12,9 @@ import mongoose from "mongoose";
  * @property {Date} sentOn date on which the message was sent
  */
 export default interface Message {
-    _id?: mongoose.Schema.Types.ObjectId,
-    to: User,
-    from: User,
     message: string,
-    sentOn: Date
+    sender: User,
+    recipient: User,
+    sentOn: Date,
+    attachments?: AttachmentType
 };
