@@ -1,4 +1,4 @@
-import Message from "../models/messages/Message";
+import Message from "../models/messages/message";
 
 /**
  * @file Declares API for Messages related data access object methods
