@@ -4,8 +4,8 @@
  */
 
 import MessageDaoI from "../interfaces/MessageDaoI";
-import MessageModel from "../mongoose/messages/MessageModel";
-import Message from "../models/messages/Message";
+import MessageModel from "../mongoose/messages/message-model";
+import Message from "../models/messages/message";
 
 /**
  * @class MessageDao Implements Data Access Object managing data storage
