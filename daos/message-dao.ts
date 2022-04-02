@@ -3,7 +3,7 @@
  * to integrate with MongoDB
  */
 
-import MessageDaoI from "../interfaces/MessageDaoI";
+import MessageDaoI from "../interfaces/message-dao-I";
 import MessageModel from "../mongoose/messages/message-model";
 import Message from "../models/messages/message";
 
@@ -71,8 +71,8 @@ export default class MessageDao implements MessageDaoI {
      * @param {Message} message Instance to be inserted into the database
      * @returns Promise To be notified when message is inserted into the database
      */
-    userSendsMessage = async (message: Message): Promise<Message> =>
-        MessageModel.create({message: message, sentOn: Date.now});
+    userSendsMessage = async (uidSender: string, message: Message): Promise<Message> =>
+        MessageModel.create({sender: uidSender, message: message, sentOn: Date.now});
 
 
 
