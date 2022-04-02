@@ -4,7 +4,7 @@ import Message from "../models/messages/message";
 /**
  * @file Declares API for messages resource
  */
-export default interface MessageControllerI {
+export default interface MessageServiceI {
     findAllMessages (req: Request, res: Response): void;
     findAllMessagesReceivedByUser (req: Request, res: Response): void;
     findAllMessagesSentByUser (req: Request, res: Response): void;
