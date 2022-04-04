@@ -45,10 +45,14 @@ export default class MessageService implements MessageServiceI{
      */
     userSendsMessage = (req: Request, res: Response) => {
         // @ts-ignore
-        let uid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
-
+        const senderUid = req.params.uid1 === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid1;
+        const recipientUid = req.params.uid2;
+        if(senderUid === "me" || recipientUid === "me"){
+            res.sendStatus(503);
+            return;
+        }
         try {
-            MessageService.messageDao.userSendsMessage(uid, req.body)
+            MessageService.messageDao.userSendsMessage(senderUid, recipientUid, req.body)
                 .then((message: Message) => res.json(message));
         } catch (e) {
             console.log(e);
@@ -90,10 +94,16 @@ export default class MessageService implements MessageServiceI{
      */
     findAllMessagesBetweenSpecificUsers = (req: Request, res: Response) => {
         // @ts-ignore
-        let uid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+        const senderUid = req.params.uid1 === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid1;
+        // @ts-ignore
+        const recipientUid = req.params.uid2 === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid2;
 
+        if(senderUid === "me" || recipientUid === "me"){
+            res.sendStatus(503);
+            return;
+        }
         try {
-            MessageService.messageDao.findAllMessagesBetweenSpecificUsers(uid, req.params.uid2)
+            MessageService.messageDao.findAllMessagesBetweenSpecificUsers(senderUid, recipientUid)
                 .then((messages: Message[]) => res.json(messages));
         } catch (e) {
             console.log(e);
