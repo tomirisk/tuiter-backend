@@ -34,27 +34,6 @@ export default class MessageService implements MessageServiceI{
 
     private constructor() {}
 
-    /**
-     * Retrieves all messages received by a user from the database
-     * @param {Request} req Represents request from client, including the path
-     * parameter uid representing the receiver user
-     * @param {Response} res Represents response to client, including the
-     * body formatted as JSON arrays containing the message objects
-     */
-    findAllMessagesReceivedByUser = (req: Request, res: Response) =>
-        MessageService.messageDao.findAllMessagesReceivedByUser(req.params.uid)
-            .then((messages: Message[]) => res.json(messages));
-
-    /**
-     * Retrieves all messages sent by a user from the database
-     * @param {Request} req Represents request from client, including the path
-     * parameter uid representing the sender user
-     * @param {Response} res Represents response to client, including the
-     * body formatted as JSON arrays containing the message objects
-     */
-    findAllMessagesSentByUser = (req: Request, res: Response) =>
-        MessageService.messageDao.findAllMessagesSentByUser(req.params.uid)
-            .then((messages: Message[]) => res.json(messages));
 
     /**
      * Creates a new message instance representing a message sent by a user to another user
@@ -99,44 +78,7 @@ export default class MessageService implements MessageServiceI{
         MessageService.messageDao.userUpdatesMessage(req.params.mid, req.body)
             .then(status => res.send(status));
 
-    /**
-     * Removes all message instance sent by a user from the database
-     * @param {Request} req Represents request from client, including the
-     * path parameters uid identifying the primary key of the user whose sent messages
-     * to be removed
-     * @param {Response} res Represents response to client, including status
-     * on whether deleting the messages was successful or not
-     */
-    deleteAllMessagesSentByUser = (req: Request, res: Response) => {
-        // @ts-ignore
-        let uid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
 
-        try {
-            MessageService.messageDao.deleteAllMessagesSentByUser(uid).then(status => res.send(status));
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    /**
-     * Removes all message instance received by a user from the database
-     * @param {Request} req Represents request from client, including the
-     * path parameters uid identifying the primary key of the user whose received messages
-     * to be removed
-     * @param {Response} res Represents response to client, including status
-     * on whether deleting the messages was successful or not
-     */
-    deleteAllMessagesReceivedByUser = (req: Request, res: Response) => {
-        // @ts-ignore
-        let uid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
-
-        try {
-            MessageService.messageDao.deleteAllMessagesReceivedByUser(uid)
-                .then(status => res.send(status));
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
 
     /**
@@ -157,7 +99,6 @@ export default class MessageService implements MessageServiceI{
             console.log(e);
         }
     }
-
 
     /**
      * Retrieves one message with its id from the database
