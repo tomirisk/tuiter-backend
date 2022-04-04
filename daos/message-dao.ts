@@ -37,31 +37,6 @@ export default class MessageDao implements MessageDaoI {
             .populate("recipient")
             .exec();
 
-    /**
-     * Uses MessageModel to retrieve all message documents sent by the user
-     * from message collection
-     * @param {string} uid User's primary key
-     * @returns Promise To be notified when the messages are retrieved from database
-     */
-    findAllMessagesSentByUser = async (uid: string): Promise<Message[]> =>
-        MessageModel
-            .find({sender: uid})
-            .populate("sender")
-            .populate("recipient")
-            .exec();
-
-    /**
-     * Uses MessageModel to retrieve all message documents received by the user
-     * from message collection
-     * @param {string} uid User's primary key
-     * @returns Promise To be notified when the messages are retrieved from database
-     */
-    findAllMessagesReceivedByUser = async (uid: string): Promise<Message[]> =>
-        MessageModel
-            .find({recipient: uid})
-            .populate("sender")
-            .populate("recipient")
-            .exec();
 
 
     /**
@@ -121,23 +96,5 @@ export default class MessageDao implements MessageDaoI {
             .populate("recipient")
             .exec();
 
-    /**
-     * Removes all messages sent by the user from the database.
-     * @param {string} uid Primary key of user
-     * @returns Promise To be notified when all messages are removed from the
-     * database
-     */
-    deleteAllMessagesSentByUser = async (uid: string): Promise<any> => {
-        return MessageModel.deleteMany({sender: uid});
-    }
 
-    /**
-     * Removes all messages received by the user from the database.
-     * @param {string} uid Primary key of user
-     * @returns Promise To be notified when all messages are removed from the
-     * database
-     */
-    deleteAllMessagesReceivedByUser = async (uid: string): Promise<any> => {
-        return MessageModel.deleteMany({recipient: uid});
-    }
 }

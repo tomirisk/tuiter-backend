@@ -7,10 +7,11 @@ import mongoose from "mongoose";
 
 /**
  * @typedef Message Represents messages relationship between two users, as in a user messages another user
- * @property {User} to User being messaged
- * @property {User} from User messaging the user
+ * @property {User} recipient User being messaged
+ * @property {User} sender User messaging the user
  * @property {string} message the message
  * @property {Date} sentOn date on which the message was sent
+ * @property {enum} attachments
  */
 export default interface Message {
     _id?: mongoose.Schema.Types.ObjectId,

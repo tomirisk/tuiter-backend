@@ -12,5 +12,5 @@ const MessageSchema = new mongoose.Schema<Message>({
     recipient: {type: Schema.Types.ObjectId, ref: "UserModel", required: true},
     sentOn: {type: Date, default: Date.now},
     attachments: {type: String, enum: ["pdf", "jpg"]}
-}, {collection: "dislikes"});
+}, {collection: "messages"});
 export default MessageSchema;

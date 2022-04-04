@@ -38,12 +38,8 @@ export default class MessageController {
             MessageController.messageController = new MessageController();
 
             app.post("/api/users/:uid1/messages/:uid2", MessageController.messageService.userSendsMessage);
-            app.get("/api/users/:uid/messages", MessageController.messageService.findAllMessagesSentByUser);
-            app.get("/api/users/:uid/receives", MessageController.messageService.findAllMessagesReceivedByUser);
             app.delete("/api/messages/:mid", MessageController.messageService.userDeletesMessage);
             app.put("/api/messages/:mid", MessageController.messageService.userUpdatesMessage);
-            app.delete("/api/users/:uid/messages", MessageController.messageService.deleteAllMessagesSentByUser);
-            app.delete("/api/users/:uid/receives", MessageController.messageService.deleteAllMessagesReceivedByUser);
             app.get("/api/users/:uid1/messages/:uid2", MessageController.messageService.findAllMessagesBetweenSpecificUsers);
             app.get("/api/messages/:mid", MessageController.messageService.findMessageById);
             app.get("/api/messages", MessageController.messageService.findAllMessages);
