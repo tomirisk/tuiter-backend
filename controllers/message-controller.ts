@@ -42,7 +42,6 @@ export default class MessageController {
             app.put("/api/messages/:mid", MessageController.messageService.userUpdatesMessage);
             app.get("/api/users/:uid1/messages/:uid2", MessageController.messageService.findAllMessagesBetweenSpecificUsers);
             app.get("/api/messages/:mid", MessageController.messageService.findMessageById);
-            app.get("/api/messages", MessageController.messageService.findAllMessages);
 
         }
         return MessageController.messageController;
