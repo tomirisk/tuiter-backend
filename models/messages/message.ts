@@ -2,7 +2,6 @@
  * @file Declares Message data type representing relationship between users, as in user messages another user
  */
 import User from "../users/User";
-import AttachmentType from "./attachment-type";
 import mongoose from "mongoose";
 
 /**
@@ -19,5 +18,5 @@ export default interface Message {
     sender: User,
     recipient: User,
     sentOn: Date,
-    attachments?: AttachmentType
+    attachmentKey?: string
 };

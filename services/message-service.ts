@@ -2,7 +2,7 @@
  * @file Message service RESTful Web service API for messages resource
  * and firebase connection services
  */
-import {Express, Request, Response} from "express";
+import {Request, Response} from "express";
 import MessageDao from "../daos/message-dao";
 import Message from "../models/messages/message";
 import MessageServiceI from "../interfaces/message-service-I";
@@ -20,10 +20,8 @@ export default class MessageService implements MessageServiceI{
     private static messageService: MessageService | null = null;
 
     /**
-     * Creates singleton controller instance
-     * @param {Express} app Express instance to declare the RESTful Web service
-     * API
-     * @return MessageController
+     * Creates singleton service instance
+     * @return MessageService
      */
     public static getInstance = (): MessageService => {
         if(MessageService.messageService === null) {
@@ -54,6 +52,8 @@ export default class MessageService implements MessageServiceI{
         try {
             MessageService.messageDao.userSendsMessage(senderUid, recipientUid, req.body)
                 .then((message: Message) => res.json(message));
+
+            // TODO : Publish event using Firebase
         } catch (e) {
             console.log(e);
         }
