@@ -90,11 +90,7 @@ export default class MessageDao implements MessageDaoI {
      * @returns Promise To be notified when the messages are retrieved from database
      */
     findAllMessagesBetweenSpecificUsers = async (uidSender: string, uidRecipient: string): Promise<Message[]> =>
-        MessageModel.find({sender: uidSender || uidRecipient, recipient: uidSender || uidRecipient})
-            .sort('-sentOn').find(function (err, posts) {})
-            .populate("sender")
-            .populate("recipient")
-            .exec();
+        MessageModel.find({sender: uidSender, recipient: uidRecipient}).exec();
 
 
 }

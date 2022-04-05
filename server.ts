@@ -35,7 +35,7 @@ const PROTOCOL = "mongodb+srv";
 const DB_USERNAME = process.env.DB_USERNAME;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_HOST = process.env.DB_HOST;
-const DB_NAME = "myFirstDatabase";
+const DB_NAME = process.env.DB_NAME;
 const DB_QUERY = "retryWrites=true&w=majority";
 
 /**
@@ -48,31 +48,28 @@ mongoose.connect(connectionString);
  * @const {Express} Represents the Express App
  */
 const app = express();
+
+const allowedOrigins = (process.env.ALLOWED_ORIGINS as string).split(',').map(origin=>origin);
+
 app.use(cors({
     credentials: true,
-    origin: [
-        'http://localhost:3000',
-        'http://localhost',
-        'https://dazzling-ride-a80508.netlify.app',
-        'https://a4--dazzling-ride-a80508.netlify.app',
-        'https://my-dislikes-screen--dazzling-ride-a80508.netlify.app'
-    ]
+    origin: allowedOrigins,
 }));
 
-const SECRET = process.env.SECRET;
 let sess = {
-    secret: SECRET,
+    secret: process.env.EXPRESS_SESSION_SECRET,
     saveUninitialized: true,
     resave: true,
     cookie: {
         secure: false,
-        sameSite: 'none'
+        sameSite: 'lax'
     }
 }
 
-if (process.env.ENVIRONMENT === 'PRODUCTION') {
-    app.set('trust proxy', 1) // trust first proxy
-    sess.cookie.secure = true // serve secure cookies
+if (process.env.NODE_ENV === 'PRODUCTION') {
+    app.set('trust proxy', 1); // trust first proxy
+    sess.cookie.secure = true; // serve secure cookies
+    sess.cookie.sameSite = 'none';
 }
 
 app.use(session(sess));
