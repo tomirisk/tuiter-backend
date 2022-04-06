@@ -26,6 +26,7 @@ import BookmarkController from "./controllers/bookmark-controller";
 import MessageController from "./controllers/message-controller";
 import AuthenticationController from "./controllers/auth-controller";
 import DislikeController from "./controllers/dislike-controller";
+import StoryController from "./controllers/story-controller";
 
 /**
  * Constants for database connection
@@ -95,6 +96,7 @@ LikeController.getInstance(app);
 FollowController.getInstance(app);
 BookmarkController.getInstance(app);
 MessageController.getInstance(app);
+StoryController.getInstance(app);
 AuthenticationController(app);
 DislikeController.getInstance(app);
 
