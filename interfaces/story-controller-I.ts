@@ -9,5 +9,5 @@ export default interface StoryControllerI {
   findStoriesByUser (req: Request, res: Response): void;
   createStory (req: Request, res: Response): void;
   deleteStoryByID (req: Request, res: Response): void;
-  deleteAllStories (req: Request, res: Response): void;
+  userDeletesTheirStories (req: Request, res: Response): void;
 };

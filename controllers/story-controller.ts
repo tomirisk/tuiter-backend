@@ -2,7 +2,7 @@
  * @file Controller RESTful Web service API for stories resource
  */
 import StoryDao from "../daos/story-dao";
-import StoryControllerI from "../interfaces/StoryControllerI";
+import StoryControllerI from "../interfaces/story-controller-I";
 import {Express, Request, Response} from "express";
 import Story from "../models/stories/story";
 
@@ -17,8 +17,8 @@ import Story from "../models/stories/story";
  *     <li>GET /api/users/:uid/stories/:sid to retrieve stories for a given user </li>
  *     <li>GET /api/stories to retrieve all the story instances</li>
  * </ul>
- * @property {TuitDao} tuitDao Singleton DAO implementing tuit CRUD operations
- * @property {TuitController} tuitController Singleton controller implementing
+ * @property {StoryDao} storyDao Singleton DAO implementing tuit CRUD operations
+ * @property {StoryController} storyController Singleton controller implementing
  * RESTful Web service API
  */
 export default class StoryController implements StoryControllerI {
@@ -36,7 +36,7 @@ export default class StoryController implements StoryControllerI {
 
       app.post("/api/users/:uid/stories", StoryController.storyController.createStory);
       app.delete("/api/stories/:sid", StoryController.storyController.deleteStoryByID);
-      app.delete("/api/users/:uid/stories", StoryController.storyController.deleteAllStories);
+      app.delete("/api/users/:uid/stories", StoryController.storyController.userDeletesTheirStories);
       app.get("/api/stories/:sid", StoryController.storyController.findStoryById);
       app.get("/api/users/:uid/stories/:sid", StoryController.storyController.findStoriesByUser);
       app.get("/api/stories", StoryController.storyController.findStories);
@@ -55,18 +55,39 @@ export default class StoryController implements StoryControllerI {
    * body formatted as JSON containing the new story that was inserted in the
    * database
    */
-  createStory = (req: Request, res: Response) =>
-      StoryController.storyDao.createStory(req.params.uid, req.body).then((story: Story) => res.json(story));
+  createStory = (req: Request, res: Response) => {
+    // @ts-ignore
+    const userUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+      if(userUid === "me"){
+        res.sendStatus(503);
+        return;
+      }
+      try {
+        StoryController.storyDao.createStory(userUid, req.body).then((story: Story) => res.json(story));
+      } catch (e) {
+        console.log(e);
+      }
+  }
 
   /**
-   * Removes all story instances from the database
+   * Removes all story instances from the database related to the particular user
    * @param {Request} req Represents request from client
    * @param {Response} res Represents response to client, including status
    * on whether deleting all stories was successful or not
    */
-  deleteAllStories = (req: Request, res: Response) =>
-      StoryController.storyDao.deleteAllStories(req.params.uid).then(status => res.send(status));
-
+  userDeletesTheirStories = (req: Request, res: Response) => {
+    // @ts-ignore
+    const userUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+      if (userUid === "me") {
+        res.sendStatus(503);
+        return;
+      }
+      try {
+        StoryController.storyDao.userDeletesTheirStories(userUid).then(status => res.send(status));
+      } catch (e) {
+        console.log(e);
+      }
+  }
   /**
    * Removes a story instance from the database
    * @param {Request} req Represents request from client, including path
@@ -84,9 +105,19 @@ export default class StoryController implements StoryControllerI {
    * @param {Response} res Represents response to client, including the
    * body formatted as JSON arrays containing the story objects
    */
-  findStoriesByUser = (req: Request, res: Response) =>
-      StoryController.storyDao.findStoriesByUser(req.params.uid).then((stories: Story[]) => res.json(stories));
-
+  findStoriesByUser = (req: Request, res: Response) => {
+  // @ts-ignore
+    const userUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+      if(userUid === "me"){
+        res.sendStatus(503);
+        return;
+      }
+      try {
+        StoryController.storyDao.findStoriesByUser(userUid).then((stories: Story[]) => res.json(stories));
+      } catch (e) {
+        console.log(e);
+      }
+  }
   /**
    * Retrieves the story by their primary key
    * @param {Request} req Represents request from client, including path

@@ -10,5 +10,5 @@ export default interface StoryDaoI {
   findStoriesByVisibility (visibility: string): Promise<Story[]>;
   createStory (uid: string, story: Story): Promise<Story>;
   deleteStoryByID (sid: string): Promise<any>;
-  deleteAllStories (uid: string): Promise<any>;
+  userDeletesTheirStories (uid: string): Promise<any>;
 };

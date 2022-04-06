@@ -2,7 +2,7 @@
  * @file Implements DAO managing data storage of stories. Uses mongoose StoryModel
  * to integrate with MongoDB
  */
-import StoryDaoI from "../interfaces/StoryDaoI";
+import StoryDaoI from "../interfaces/story-dao-I";
 import Story from "../models/stories/story";
 import StoryModel from "../mongoose/stories/story-model";
 
@@ -51,7 +51,7 @@ export default class StoryDao implements StoryDaoI {
    * @returns Promise To be notified when all stories are removed from the
    * database
    */
-  deleteAllStories = async (uid: string): Promise<any> => {
+  userDeletesTheirStories = async (uid: string): Promise<any> => {
     return StoryModel.deleteMany({postedBy: uid});
   }
 
@@ -88,7 +88,7 @@ export default class StoryDao implements StoryDaoI {
    * @param visibility Visibility of story
    */
   findStoriesByVisibility = async (visibility: string): Promise<Story[]> => {
-    return (await this.findStories()).filter(story => story.visibility === visibility);
+    return StoryModel.find({visibility: visibility}).populate("postedBy");
   }
 
 }
