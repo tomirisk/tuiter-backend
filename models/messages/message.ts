@@ -1,7 +1,7 @@
 /**
  * @file Declares Message data type representing relationship between users, as in user messages another user
  */
-import User from "../users/User";
+import User from "../users/user";
 import mongoose from "mongoose";
 
 /**
