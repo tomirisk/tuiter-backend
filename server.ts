@@ -99,7 +99,6 @@ MessageController.getInstance(app);
 StoryController.getInstance(app);
 AuthenticationController(app);
 DislikeController.getInstance(app);
-StoryController.getInstance(app);
 
 /**
  * Start a server listening at port 4000 locally
