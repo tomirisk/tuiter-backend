@@ -1,5 +1,4 @@
 import {Request, Response} from "express";
-import Message from "../models/messages/message";
 
 /**
  * @file Declares API for messages resource
