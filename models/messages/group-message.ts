@@ -8,7 +8,7 @@ import Group from "./group";
 /**
  * @typedef GroupMessage Represents messages relationship between two users, as in a user messages another user
  * @property {Group} group Group being messaged
- * @property {User} sender User messaging the user
+ * @property {User} sender User messaging the group
  * @property {string} message the message
  * @property {Date} sentOn date on which the message was sent
  * @property {string} attachments

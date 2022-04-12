@@ -70,7 +70,6 @@ export default class GroupMessageDao implements GroupMessageDaoI {
     /**
      * Uses GroupMessageModel to retrieve all group message documents sent between group
      * from group message collection
-     * @param {string} uidSender sender's primary key
      * @param {string} groupId group's primary key
      * @returns Promise To be notified when the group messages are retrieved from database
      */
