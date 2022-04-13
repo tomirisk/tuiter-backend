@@ -10,6 +10,4 @@ export default interface MessageDaoI {
     userUpdatesMessage (mid: string, message: Message): Promise<any>;
     findMessageById (mid: string): Promise<any>;
     findAllMessagesBetweenSpecificUsers (uidSender: string, uidRecipient: string): Promise<Message[]>;
-
-
 };
