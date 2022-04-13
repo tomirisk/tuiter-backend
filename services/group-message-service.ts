@@ -39,8 +39,8 @@ export default class GroupMessageService implements GroupMessageServiceI{
      */
     userSendsGroupMessage = (req: Request, res: Response) => {
         // @ts-ignore
-        const senderUid = req.params.uid1 === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid1;
-        const groupId = req.params.uid2;
+        const senderUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+        const groupId = req.params.gid;
         if(senderUid === "me" || !groupId){
             res.sendStatus(503);
             return;
@@ -68,7 +68,7 @@ export default class GroupMessageService implements GroupMessageServiceI{
     /**
      * Retrieves all group messages sent between a group from the database
      * @param {Request} req Represents request from client, including the path
-     * parameter uid1, uid2 representing the users in the group messaging
+     * parameter gid representing the group
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the message objects
      */

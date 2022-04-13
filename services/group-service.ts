@@ -69,13 +69,13 @@ export default class GroupService implements GroupServiceI{
     /**
      * Finds out if a user is part of a group
      * @param {Request} req Represents request from client, including the path
-     * parameter uid1, uid2 representing the current user and the group
+     * parameter uid, gid representing the current user and the group
      * @param {Response} res Represents response to client, 1 or 0
      */
     isUserInGroup = (req: Request, res: Response) => {
         // @ts-ignore
-        const userId = req.params.uid1 === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid1;
-        const gid = req.params.uid2;
+        const userId = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+        const gid = req.params.gid;
 
         if(userId === "me"  || !gid){
             res.sendStatus(503);
