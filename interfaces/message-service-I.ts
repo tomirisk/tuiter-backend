@@ -10,6 +10,5 @@ export default interface MessageServiceI {
     userUpdatesMessage (req: Request, res: Response): void;
     findMessageById (req: Request, res: Response): void;
     findAllMessagesBetweenSpecificUsers (req: Request, res: Response): void;
-
 };
 
