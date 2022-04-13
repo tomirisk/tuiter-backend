@@ -38,7 +38,7 @@ export default class StoryController implements StoryControllerI {
       app.delete("/api/stories/:sid", StoryController.storyController.deleteStoryByID);
       app.delete("/api/users/:uid/stories", StoryController.storyController.userDeletesTheirStories);
       app.get("/api/stories/:sid", StoryController.storyController.findStoryById);
-      app.get("/api/users/:uid/stories/:sid", StoryController.storyController.findStoriesByUser);
+      app.get("/api/users/:uid/stories", StoryController.storyController.findStoriesByUser);
       app.get("/api/stories", StoryController.storyController.findStories);
     }
     return StoryController.storyController;
