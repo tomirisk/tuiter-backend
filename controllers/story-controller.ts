@@ -5,6 +5,7 @@ import StoryDao from "../daos/story-dao";
 import StoryControllerI from "../interfaces/story-controller-I";
 import {Express, Request, Response} from "express";
 import Story from "../models/stories/story";
+import User from "../models/users/user";
 
 /**
  * @class StoryController Implements RESTful Web service API for stories resource.
@@ -40,6 +41,8 @@ export default class StoryController implements StoryControllerI {
       app.get("/api/stories/:sid", StoryController.storyController.findStoryById);
       app.get("/api/users/:uid/stories", StoryController.storyController.findStoriesByUser);
       app.get("/api/stories", StoryController.storyController.findStories);
+      app.get("/api/users/:uid/view/stories", StoryController.storyController.findStoriesVisibleToUser);
+      app.get("/api/stories/:sid/view/users", StoryController.storyController.findUsersWhoCanViewStory);
     }
     return StoryController.storyController;
   }
@@ -136,5 +139,17 @@ export default class StoryController implements StoryControllerI {
    */
   findStories = (req: Request, res: Response) =>
       StoryController.storyDao.findStories().then((stories: Story[]) => res.json(stories));
+
+  /**
+   * Retrieves all stories that are visible to user
+   * @param {Request} req Represents request from client
+   * @param {Response} res Represents response to client, including the
+   * body formatted as JSON arrays containing the story objects
+   */
+  findStoriesVisibleToUser = (req: Request, res: Response) =>
+      StoryController.storyDao.findStoriesVisibleToUser(req.params.uid).then((stories: Story[]) => res.json(stories));
+
+  findUsersWhoCanViewStory = (req: Request, res: Response) =>
+      StoryController.storyDao.findUsersWhoCanViewStory(req.params.sid).then((users: User[]) => res.json(users));
 
 }

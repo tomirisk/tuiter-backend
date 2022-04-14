@@ -5,6 +5,7 @@
 import StoryDaoI from "../interfaces/story-dao-I";
 import Story from "../models/stories/story";
 import StoryModel from "../mongoose/stories/story-model";
+import User from "../models/users/user";
 
 /**
  * @class StoryDao Implements Data Access Object managing data storage
@@ -85,10 +86,17 @@ export default class StoryDao implements StoryDaoI {
   /**
    * Retrieves all stories by visibility, as stories can be visible to public, friends or
    * close friends groups
-   * @param visibility Visibility of story
+   * @param uid
    */
-  findStoriesByVisibility = async (visibility: string): Promise<Story[]> => {
-    return StoryModel.find({visibility: visibility}).populate("postedBy");
+  findStoriesVisibleToUser = async (uid: string): Promise<Story[]> => {
+    const stories = await this.findStories();
+    // @ts-ignore
+    return stories.map((story) => story.viewers ? story.viewers.filter(viewer => viewer._id==="me") : story);
   }
+
+  findUsersWhoCanViewStory = async (sid: string): Promise<User[]> => {
+    const story = await this.findStoryById(sid);
+    return story.viewers;
+  };
 
 }
