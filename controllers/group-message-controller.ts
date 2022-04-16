@@ -8,10 +8,10 @@ import GroupMessageService from "../services/group-message-service";
  * @class GroupMessageController Implements RESTful Web service API for group messages resource.
  * Defines the following HTTP endpoints:
  * <ul>
- *     <li>POST /api/users/:uid/group-messages/:gid to create a new group message instance sent by the user</li>
- *     <li>DELETE /api/group-messages/:mid to delete a group message</li>
- *     <li>GET /api/group-messages/:gid to retrieve all the messages sent in a group</li>
- *     <li>GET /api/group-messages/:mid to retrieve a group message</li>
+ *     <li>POST /api/groups/:gid/users/:uid/messages to create a new group message instance sent by the user</li>
+ *     <li>DELETE /api/groups/:gid/messages/:mid to delete a group message</li>
+ *     <li>GET /api/groups/:gid/messages to retrieve all the messages sent in a group</li>
+ *     <li>GET /api/groups/:gid/messages/:mid to retrieve a group message</li>
  * </ul>
  * @property {GroupMessageService} groupMessageService Singleton service object implementing follows CRUD operations
  * @property {GroupMessageController} groupMessageController Singleton controller implementing
@@ -31,10 +31,10 @@ export default class GroupMessageController {
         if(GroupMessageController.groupMessageController === null) {
             GroupMessageController.groupMessageController = new GroupMessageController();
 
-            app.post("/api/users/:uid/group-messages/:gid", GroupMessageController.groupMessageService.userSendsGroupMessage);
-            app.delete("/api/group-messages/:mid", GroupMessageController.groupMessageService.userDeletesGroupMessage);
-            app.get("/api/group-messages/:gid", GroupMessageController.groupMessageService.findAllMessagesBetweenGroup);
-            app.get("/api/group-messages/:mid", GroupMessageController.groupMessageService.findGroupMessageById);
+            app.post("/api/groups/:gid/users/:uid/messages", GroupMessageController.groupMessageService.userSendsGroupMessage);
+            app.delete("/api/groups/:gid/messages/:mid", GroupMessageController.groupMessageService.userDeletesGroupMessage);
+            app.get("/api/groups/:gid/messages", GroupMessageController.groupMessageService.findAllMessagesBetweenGroup);
+            app.get("/api/groups/:gid/messages/:mid", GroupMessageController.groupMessageService.findGroupMessageById);
 
         }
         return GroupMessageController.groupMessageController;

@@ -10,9 +10,9 @@ import GroupService from "../services/group-service";
  * <ul>
  *     <li>POST /api/users/:uid/groups to create a new group instance </li>
  *     <li>DELETE /api/groups/:gid to delete a group </li>
- *     <li>GET /api/users/:uid/groups/:gid to find if user is in a group </li>
+ *     <li>GET /api/groups/:gid/users/:uid to find if user is in a group </li>
  *     <li>GET /api/groups/:gid to retrieve a group </li>
- *     <li>GET /api/groups retrieve all groups <li>
+ *     <li>GET /api/user/:uid/groups retrieve all user's groups <li>
  * </ul>
  * @property {GroupService} groupService Singleton service object implementing follows CRUD operations
  * @property {GroupMessageController} groupController Singleton controller implementing
@@ -35,8 +35,8 @@ export default class GroupController {
             app.post("/api/users/:uid/groups", GroupController.groupService.createGroup);
             app.delete("/api/groups/:gid", GroupController.groupService.deleteGroup);
             app.get("/api/groups/:gid", GroupController.groupService.findGroupById);
-            app.get("/api/users/:uid/groups/:gid", GroupController.groupService.isUserInGroup);
-            app.get("/api/groups", GroupController.groupService.findAllGroups);
+            app.get("/api/groups/:gid/users/:uid", GroupController.groupService.isUserInGroup);
+            app.get("/api/user/:uid/groups", GroupController.groupService.findAllUserGroups);
         }
         return GroupController.groupController;
     }

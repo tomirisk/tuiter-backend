@@ -82,8 +82,7 @@ export default class GroupService implements GroupServiceI{
             return;
         }
         try {
-            GroupService.groupDao.isUserInGroup(userId, gid)
-                .then((status) => res.send(status));
+            return GroupService.groupDao.isUserInGroup(userId, gid);
         } catch (e) {
             console.log(e);
         }
@@ -100,14 +99,26 @@ export default class GroupService implements GroupServiceI{
             .then((group: Group) => res.json(group));
 
     /**
-     * Retrieves all groups from the database
+     * Retrieves all user's groups from the database
      * @param {Request} req Represents request from client
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the group objects
      */
-    findAllGroups = (req: Request, res: Response) =>
-        GroupService.groupDao.findAllGroups()
-            .then((groups: Group[]) => res.json(groups));
+    findAllUserGroups = (req: Request, res: Response) => {
+        // @ts-ignore
+        const userId = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+        if(userId === "me"){
+            res.sendStatus(503);
+            return;
+        }
+
+        try {
+            GroupService.groupDao.findAllUserGroups(userId).then((groups: Group[]) => res.json(groups));
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
 
 
 };
