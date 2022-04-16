@@ -48,7 +48,7 @@ export default class GroupService implements GroupServiceI{
             return;
         }
         try {
-            GroupService.groupDao.createGroup(allUids, req.body)
+            GroupService.groupDao.createGroup(creatorUid, allUids, req.body)
                 .then((group: Group) => res.json(group));
         } catch (e) {
             console.log(e);
