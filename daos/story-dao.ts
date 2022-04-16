@@ -70,7 +70,7 @@ export default class StoryDao implements StoryDaoI {
    * @returns Promise To be notified when the stories are retrieved from database
    */
   findStoriesByUser = async (uid: string): Promise<Story[]> => {
-    return StoryModel.find({postedBy: uid}).populate("postedBy");
+    return StoryModel.find({postedBy: uid});
   }
 
   /**

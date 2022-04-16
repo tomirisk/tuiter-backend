@@ -18,6 +18,8 @@ import express, {Request, Response} from 'express';
 import mongoose from 'mongoose';
 import cors from "cors";
 const session = require("express-session");
+const http = require('http');
+import {Server} from "socket.io";
 import UserController from './controllers/user-controller';
 import TuitController from "./controllers/tuit-controller";
 import LikeController from "./controllers/like-controller";
@@ -84,6 +86,13 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Running!')
 });
 
+const server = http.createServer(app);
+const socketIoServer = new Server(server, {
+    cors: {
+        origin: allowedOrigins,
+    }
+});
+
 /**
  * Create RESTful Web service API
  */
@@ -92,7 +101,7 @@ TuitController.getInstance(app);
 LikeController.getInstance(app);
 FollowController.getInstance(app);
 BookmarkController.getInstance(app);
-MessageController.getInstance(app);
+MessageController.getInstance(app, socketIoServer);
 StoryController.getInstance(app);
 AuthenticationController(app);
 DislikeController.getInstance(app);
@@ -102,4 +111,4 @@ DislikeController.getInstance(app);
  * but use environment variable PORT on Heroku if available.
  */
 const PORT = 4000;
-app.listen(process.env.PORT || PORT);
+server.listen(process.env.PORT || PORT);

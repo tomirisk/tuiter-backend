@@ -6,6 +6,7 @@ import {Request, Response} from "express";
 import MessageDao from "../daos/message-dao";
 import Message from "../models/messages/message";
 import MessageServiceI from "../interfaces/message-service-I";
+import {Server} from "socket.io";
 
 /**
  * @class MessageService Implements RESTful Web service API for messages resource and firebase
@@ -40,8 +41,9 @@ export default class MessageService implements MessageServiceI{
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON containing the new message that was inserted in the
      * database
+     * @param socketIoServer Socket.io server instance to emit update event
      */
-    userSendsMessage = (req: Request, res: Response) => {
+    userSendsMessage = (req: Request, res: Response, socketIoServer: Server) => {
         // @ts-ignore
         const senderUid = req.params.uid1 === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid1;
         const recipientUid = req.params.uid2;
@@ -53,7 +55,7 @@ export default class MessageService implements MessageServiceI{
             MessageService.messageDao.userSendsMessage(senderUid, recipientUid, req.body)
                 .then((message: Message) => res.json(message));
 
-            // TODO : Publish event using Firebase
+            socketIoServer.emit(recipientUid, {type: 'NEW_MESSAGE'});
         } catch (e) {
             console.log(e);
         }
@@ -130,4 +132,34 @@ export default class MessageService implements MessageServiceI{
         MessageService.messageDao.findAllMessages()
             .then((messages: Message[]) => res.json(messages));
 
+    /**
+     * Creates new message instances representing broadcast messages sent by a user to a list of users
+     * @param {Request} req Represents request from client, including the
+     * body containing the JSON object for the new message to be inserted in the database
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON containing the new message that was inserted in the database
+     * @param socketIoServer Socket.io server instance to emit update event
+     */
+    userSendsBroadcastMessage = async (req: Request, res: Response, socketIoServer: Server) => {
+        // @ts-ignore
+        const senderUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+        const recipientIds = req.body.recipientIds;
+        if(senderUid === "me" || !recipientIds){
+            res.sendStatus(503);
+            return;
+        }
+        try {
+            const messages: Message[] = [];
+            await Promise.all(await recipientIds.map(async (recipientUid: string) => {
+                const message = await MessageService.messageDao.userSendsMessage(senderUid, recipientUid, req.body);
+                messages.push(message);
+
+                socketIoServer.emit(recipientUid, {type: 'NEW_MESSAGE'});
+            }));
+
+            res.json(messages);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 };

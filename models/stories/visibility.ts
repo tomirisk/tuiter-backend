@@ -3,8 +3,7 @@
  */
 enum Visibility {
   Public = 'PUBLIC',
-  Friends = 'FRIENDS',
-  CloseFriends = 'CLOSE_FRIENDS'
+  Private = 'PRIVATE'
 };
 
 export default Visibility;
