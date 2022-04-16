@@ -28,13 +28,15 @@ export default class GroupDao implements GroupDaoI {
     private constructor() {}
 
     /**
-     * Uses GroupModel to retrieve all group documents
+     * Uses GroupModel to retrieve all user's group documents
      * @returns Promise To be notified when the groups are retrieved from database
      */
-    findAllGroups = async (): Promise<Group[]> =>
-        GroupModel.find()
-            .populate("users")
-            .exec();
+    findAllUserGroups = async (uid: string): Promise<Group[]> => {
+        const groups = await GroupModel.find();
+        // @ts-ignore
+        const userGroups = groups.filter(async group => await this.isUserInGroup(uid, group._id) === 1);
+        return userGroups;
+    }
 
     /**
      * Inserts group instance into the database
@@ -42,8 +44,8 @@ export default class GroupDao implements GroupDaoI {
      * @param {Group} group Instance to be inserted into the database
      * @returns Promise To be notified when group is inserted into the database
      */
-    createGroup = async (uids: string[], group: Group): Promise<Group> =>
-        GroupModel.create({ ...group, users: uids});
+    createGroup = async (creatorUid: string, uids: string[], group: Group): Promise<Group> =>
+        GroupModel.create({ ...group, owner:creatorUid, users: uids});
 
     /**
      * Uses GroupModel to retrieve a single group document with the given gid
@@ -61,8 +63,9 @@ export default class GroupDao implements GroupDaoI {
      * @param {string} gid Primary key of group to be removed
      * @returns Promise To be notified when group is removed from the database
      */
-    deleteGroup = async (gid: string): Promise<any> =>
+    deleteGroup = async (gid: string): Promise<any> => {
         GroupModel.deleteOne({_id: gid});
+    }
 
     /**
      * Uses GroupModel and elemMatch to find if a user exists in
@@ -72,7 +75,7 @@ export default class GroupDao implements GroupDaoI {
      * @returns Promise of 1 or 0, 1 returns the group instance indicating that
      * the user exists in the group. If 0, the user doesn't exist in the group.
      */
-    isUserInGroup = async (uid: string, gid: string): Promise<any> =>
+    isUserInGroup = async (uid: string, gid: string): Promise<number> =>
         GroupModel.find({_id: gid,
             users: {
             $elemMatch: {user: uid}
