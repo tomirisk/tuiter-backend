@@ -5,7 +5,7 @@
 import StoryDaoI from "../interfaces/story-dao-I";
 import Story from "../models/stories/story";
 import StoryModel from "../mongoose/stories/story-model";
-import User from "../models/users/user";
+import UserDao from "./user-dao";
 
 /**
  * @class StoryDao Implements Data Access Object managing data storage
@@ -14,6 +14,7 @@ import User from "../models/users/user";
  */
 export default class StoryDao implements StoryDaoI {
   private static storyDao: StoryDao | null = null;
+  private static userDao: UserDao = UserDao.getInstance();
 
   /**
    * Creates singleton DAO instance
@@ -28,14 +29,17 @@ export default class StoryDao implements StoryDaoI {
 
   private constructor() {}
 
+
   /**
    * Inserts story instance into the database
    * @param {string} uid User's primary key
+   * @param {string} viewers Primary keys of users who can view the story, if vid is empty,
+   * story is available for public
    * @param {Story} story Instance to be inserted into the database
    * @returns Promise To be notified when story is inserted into the database
    */
-  createStory = async (uid: string, story: Story): Promise<Story> => {
-    return StoryModel.create({...story, postedBy: uid});
+  createStory = async (uid: string, viewers: string[], story: Story): Promise<Story> => {
+    return StoryModel.create({...story, viewers: viewers, postedBy: uid});
   }
 
   /**
@@ -62,7 +66,7 @@ export default class StoryDao implements StoryDaoI {
    * @returns Promise To be notified when story is retrieved from the database
    */
   findStoryById = async (sid: string): Promise<any> => {
-    return StoryModel.findById(sid).populate("postedBy");
+    return StoryModel.findById(sid).populate("viewers").populate("postedBy").exec();
   }
 
   /**
@@ -80,7 +84,7 @@ export default class StoryDao implements StoryDaoI {
    * database
    */
   findStories = async (): Promise<Story[]> => {
-    return StoryModel.find().populate("postedBy");
+    return StoryModel.find().populate("viewers").populate("postedBy").exec();
 }
 
   /**
@@ -90,13 +94,8 @@ export default class StoryDao implements StoryDaoI {
    */
   findStoriesVisibleToUser = async (uid: string): Promise<Story[]> => {
     const stories = await this.findStories();
-    // @ts-ignore
-    return stories.map((story) => story.viewers ? story.viewers.filter(viewer => viewer._id==="me") : story);
+    const user = await StoryDao.userDao.findUserById(uid);
+    return stories.filter((story) => (story.viewers.length < 1 ||
+        story.viewers.find(viewer => String(viewer._id)===uid)));
   }
-
-  findUsersWhoCanViewStory = async (sid: string): Promise<User[]> => {
-    const story = await this.findStoryById(sid);
-    return story.viewers;
-  };
-
 }

@@ -5,7 +5,6 @@ import StoryDao from "../daos/story-dao";
 import StoryControllerI from "../interfaces/story-controller-I";
 import {Express, Request, Response} from "express";
 import Story from "../models/stories/story";
-import User from "../models/users/user";
 
 /**
  * @class StoryController Implements RESTful Web service API for stories resource.
@@ -39,10 +38,9 @@ export default class StoryController implements StoryControllerI {
       app.delete("/api/stories/:sid", StoryController.storyController.deleteStoryByID);
       app.delete("/api/users/:uid/stories", StoryController.storyController.userDeletesTheirStories);
       app.get("/api/stories/:sid", StoryController.storyController.findStoryById);
-      app.get("/api/users/:uid/stories", StoryController.storyController.findStoriesByUser);
+      app.get("/api/users/:uid/my-stories", StoryController.storyController.findStoriesByUser);
       app.get("/api/stories", StoryController.storyController.findStories);
-      app.get("/api/users/:uid/view/stories", StoryController.storyController.findStoriesVisibleToUser);
-      app.get("/api/stories/:sid/view/users", StoryController.storyController.findUsersWhoCanViewStory);
+      app.get("/api/users/:uid/stories", StoryController.storyController.findStoriesVisibleToUser);
     }
     return StoryController.storyController;
   }
@@ -61,12 +59,13 @@ export default class StoryController implements StoryControllerI {
   createStory = (req: Request, res: Response) => {
     // @ts-ignore
     const userUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
-      if(userUid === "me"){
+    const viewers = req.body.viewers;
+      if(userUid === "me" || viewers.includes(userUid)){
         res.sendStatus(503);
         return;
       }
       try {
-        StoryController.storyDao.createStory(userUid, req.body).then((story: Story) => res.json(story));
+        StoryController.storyDao.createStory(userUid, req.body.viewers, req.body).then((story: Story) => res.json(story));
       } catch (e) {
         console.log(e);
       }
@@ -137,8 +136,9 @@ export default class StoryController implements StoryControllerI {
    * @param {Response} res Represents response to client, including the
    * body formatted as JSON arrays containing the story objects
    */
-  findStories = (req: Request, res: Response) =>
+  findStories = (req: Request, res: Response) => {
       StoryController.storyDao.findStories().then((stories: Story[]) => res.json(stories));
+  }
 
   /**
    * Retrieves all stories that are visible to user
@@ -146,10 +146,18 @@ export default class StoryController implements StoryControllerI {
    * @param {Response} res Represents response to client, including the
    * body formatted as JSON arrays containing the story objects
    */
-  findStoriesVisibleToUser = (req: Request, res: Response) =>
-      StoryController.storyDao.findStoriesVisibleToUser(req.params.uid).then((stories: Story[]) => res.json(stories));
-
-  findUsersWhoCanViewStory = (req: Request, res: Response) =>
-      StoryController.storyDao.findUsersWhoCanViewStory(req.params.sid).then((users: User[]) => res.json(users));
+  findStoriesVisibleToUser = (req: Request, res: Response) => {
+    // @ts-ignore
+    const userUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
+    if(userUid === "me"){
+      res.sendStatus(503);
+      return;
+    }
+    try {
+      StoryController.storyDao.findStoriesVisibleToUser(userUid).then((stories: Story[]) => res.json(stories));
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
 }
