@@ -14,8 +14,10 @@ import Story from "../models/stories/story";
  *     <li>DELETE /api/stories/:sid to remove a particular story instance</li>
  *     <li>DELETE /api/users/:uid/stories to remove all stories of the particular user</li>
  *     <li>GET /api/stories/:sid to retrieve a particular story instances</li>
- *     <li>GET /api/users/:uid/stories/:sid to retrieve stories for a given user </li>
+ *     <li>GET /api/users/:uid/my-stories to retrieve stories created by a given user </li>
  *     <li>GET /api/stories to retrieve all the story instances</li>
+ *     <li>GET /api/users/:uid/stories to retrieve the story instances that are visible to the given
+ *     user</li>
  * </ul>
  * @property {StoryDao} storyDao Singleton DAO implementing tuit CRUD operations
  * @property {StoryController} storyController Singleton controller implementing
@@ -59,13 +61,12 @@ export default class StoryController implements StoryControllerI {
   createStory = (req: Request, res: Response) => {
     // @ts-ignore
     const userUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
-    const viewers = req.body.viewers;
-      if(userUid === "me" || viewers.includes(userUid)){
+      if(userUid === "me"){
         res.sendStatus(503);
         return;
       }
       try {
-        StoryController.storyDao.createStory(userUid, req.body.viewers, req.body).then((story: Story) => res.json(story));
+        StoryController.storyDao.createStory(userUid, req.body).then((story: Story) => res.json(story));
       } catch (e) {
         console.log(e);
       }
@@ -101,7 +102,7 @@ export default class StoryController implements StoryControllerI {
       StoryController.storyDao.deleteStoryByID(req.params.sid).then(status => res.send(status));
 
   /**
-   * Retrieves all stories from the database for a particular user and returns
+   * Retrieves all stories from the database that are created by a particular user and returns
    * an array of stories.
    * @param {Request} req Represents request from client
    * @param {Response} res Represents response to client, including the
@@ -141,7 +142,8 @@ export default class StoryController implements StoryControllerI {
   }
 
   /**
-   * Retrieves all stories that are visible to user
+   * Retrieves all stories that are visible to the particular user, as some stories might be
+   * visible to public, some to the selected users' list
    * @param {Request} req Represents request from client
    * @param {Response} res Represents response to client, including the
    * body formatted as JSON arrays containing the story objects

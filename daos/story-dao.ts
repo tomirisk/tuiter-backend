@@ -5,7 +5,6 @@
 import StoryDaoI from "../interfaces/story-dao-I";
 import Story from "../models/stories/story";
 import StoryModel from "../mongoose/stories/story-model";
-import UserDao from "./user-dao";
 
 /**
  * @class StoryDao Implements Data Access Object managing data storage
@@ -14,7 +13,6 @@ import UserDao from "./user-dao";
  */
 export default class StoryDao implements StoryDaoI {
   private static storyDao: StoryDao | null = null;
-  private static userDao: UserDao = UserDao.getInstance();
 
   /**
    * Creates singleton DAO instance
@@ -33,13 +31,11 @@ export default class StoryDao implements StoryDaoI {
   /**
    * Inserts story instance into the database
    * @param {string} uid User's primary key
-   * @param {string} viewers Primary keys of users who can view the story, if vid is empty,
-   * story is available for public
    * @param {Story} story Instance to be inserted into the database
    * @returns Promise To be notified when story is inserted into the database
    */
-  createStory = async (uid: string, viewers: string[], story: Story): Promise<Story> => {
-    return StoryModel.create({...story, viewers: viewers, postedBy: uid});
+  createStory = async (uid: string, story: Story): Promise<Story> => {
+    return StoryModel.create({...story, postedBy: uid});
   }
 
   /**
@@ -88,13 +84,12 @@ export default class StoryDao implements StoryDaoI {
 }
 
   /**
-   * Retrieves all stories by visibility, as stories can be visible to public, friends or
-   * close friends groups
-   * @param uid
+   * Retrieves all stories visible to specific user, as stories can be visible to public or
+   * only to some selected users
+   * @param {string} uid User's primary key
    */
   findStoriesVisibleToUser = async (uid: string): Promise<Story[]> => {
     const stories = await this.findStories();
-    const user = await StoryDao.userDao.findUserById(uid);
     return stories.filter((story) => (story.viewers.length < 1 ||
         story.viewers.find(viewer => String(viewer._id)===uid)));
   }
