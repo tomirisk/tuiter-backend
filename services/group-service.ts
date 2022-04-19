@@ -119,6 +119,14 @@ export default class GroupService implements GroupServiceI{
         }
     }
 
-
-
+    /**
+     * Updates a group instance from the database
+     * @param {Request} req Represents request from client, including the
+     * path parameters gid identifying the primary key of the group to be updated
+     * @param {Response} res Represents response to client, including status
+     * on whether updating the group was successful or not
+     */
+    updateGroup = (req: Request, res: Response) =>
+        GroupService.groupDao.updateGroup(req.params.gid, req.body)
+            .then(status => res.send(status));
 };

@@ -40,6 +40,7 @@ export default class GroupDao implements GroupDaoI {
 
     /**
      * Inserts group instance into the database
+     * @param {string} creatorUid owners uid
      * @param {string} uids users' primary key
      * @param {Group} group Instance to be inserted into the database
      * @returns Promise To be notified when group is inserted into the database
@@ -81,4 +82,14 @@ export default class GroupDao implements GroupDaoI {
             $elemMatch: {user: uid}
         }
         }).count().exec();
+
+    /**
+     * Updates group with new values in database
+     * @param {string} uid Primary key of group to be modified
+     * @param {Group} group Group object containing properties and their new values
+     * @returns Promise To be notified when group is updated in the database
+     */
+    updateGroup = async (uid: string, group: Group): Promise<any> => {
+        return GroupModel.updateOne({_id: uid}, {$set: group});
+    }
 }
