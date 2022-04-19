@@ -6,6 +6,7 @@
 import GroupDaoI from "../interfaces/group-dao-I";
 import GroupModel from "../mongoose/messages/group-model";
 import Group from "../models/messages/group";
+import User from "../models/users/user";
 
 /**
  * @class GroupDao Implements Data Access Object managing data storage
@@ -45,8 +46,8 @@ export default class GroupDao implements GroupDaoI {
      * @param {Group} group Instance to be inserted into the database
      * @returns Promise To be notified when group is inserted into the database
      */
-    createGroup = async (creatorUid: string, uids: string[], group: Group): Promise<Group> =>
-        GroupModel.create({ ...group, owner:creatorUid, users: uids});
+    createGroup = async (creatorUid: string, users: User[], group: Group): Promise<Group> =>
+        GroupModel.create({ ...group, owner: creatorUid, users: users});
 
     /**
      * Uses GroupModel to retrieve a single group document with the given gid

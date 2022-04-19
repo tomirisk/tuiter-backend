@@ -39,18 +39,24 @@ export default class GroupService implements GroupServiceI{
      * body formatted as JSON containing the new group that was inserted in the
      * database
      */
-    createGroup = (req: Request, res: Response) => {
+    createGroup = async (req: Request, res: Response) => {
         // @ts-ignore
         const creatorUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
-        const usersAddedIds = req.body.usersAddedIds;
-        const allUids = usersAddedIds.append(creatorUid);
 
-        if(creatorUid === "me" || !usersAddedIds){
+        if(creatorUid === "me" || !req.body.users){
             res.sendStatus(503);
             return;
         }
+        req.body.users.push(creatorUid);
+
         try {
-            GroupService.groupDao.createGroup(creatorUid, allUids, req.body)
+            const existingGroups = await GroupService.groupDao.findAllUserGroups(creatorUid);
+            const filteredGroups = existingGroups.filter(group => group.name.toLowerCase() === req.body.group.name.toLowerCase());
+            if(filteredGroups.length > 0){
+                res.sendStatus(400);
+                return;
+            }
+            GroupService.groupDao.createGroup(creatorUid, req.body.users, req.body.group)
                 .then((group: Group) => res.json(group));
         } catch (e) {
             console.log(e);
