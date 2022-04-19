@@ -29,6 +29,7 @@ import MessageController from "./controllers/message-controller";
 import AuthenticationController from "./controllers/auth-controller";
 import DislikeController from "./controllers/dislike-controller";
 import StoryController from "./controllers/story-controller";
+import GroupController from "./controllers/group-controller";
 
 /**
  * Constants for database connection
@@ -105,6 +106,7 @@ MessageController.getInstance(app, socketIoServer);
 StoryController.getInstance(app);
 AuthenticationController(app);
 DislikeController.getInstance(app);
+GroupController.getInstance(app);
 
 /**
  * Start a server listening at port 4000 locally

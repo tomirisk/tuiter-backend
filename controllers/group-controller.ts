@@ -37,6 +37,7 @@ export default class GroupController {
             app.get("/api/groups/:gid", GroupController.groupService.findGroupById);
             app.get("/api/groups/:gid/users/:uid", GroupController.groupService.isUserInGroup);
             app.get("/api/user/:uid/groups", GroupController.groupService.findAllUserGroups);
+            app.put("/api/groups/:gid", GroupController.groupService.updateGroup);
         }
         return GroupController.groupController;
     }

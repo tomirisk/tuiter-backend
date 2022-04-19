@@ -9,4 +9,5 @@ export default interface GroupServiceI {
     deleteGroup (req: Request, res: Response): void;
     findGroupById (req: Request, res: Response): void;
     isUserInGroup (req: Request, res: Response): void;
+    updateGroup (req: Request, res: Response): void;
 };

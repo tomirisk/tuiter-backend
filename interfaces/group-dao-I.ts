@@ -9,4 +9,5 @@ export default interface GroupDaoI {
     deleteGroup (gid: string): Promise<any>;
     findGroupById (gid: string): Promise<any>;
     isUserInGroup (uid: string, gid: string): Promise<number>;
+    updateGroup (uid: string, group: Group): Promise<any>;
 };
