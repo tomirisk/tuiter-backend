@@ -43,19 +43,19 @@ export default class GroupService implements GroupServiceI{
         // @ts-ignore
         const creatorUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
 
-        if(creatorUid === "me" || !req.body.users){
+        if(creatorUid === "me"){
             res.sendStatus(503);
             return;
         }
         req.body.users.push(creatorUid);
 
         try {
-            const existingGroups = await GroupService.groupDao.findAllUserGroups(creatorUid);
-            const filteredGroups = existingGroups.filter(group => group.name.toLowerCase() === req.body.group.name.toLowerCase());
-            if(filteredGroups.length > 0){
-                res.sendStatus(400);
-                return;
-            }
+            // const existingGroups = await GroupService.groupDao.findAllUserGroups(creatorUid);
+            // const filteredGroups = existingGroups.filter(group => group.name.toLowerCase() === req.body.group.name.toLowerCase());
+            // if(filteredGroups.length > 0){
+            //     res.sendStatus(400);
+            //     return;
+            // }
             GroupService.groupDao.createGroup(creatorUid, req.body.users, req.body.group)
                 .then((group: Group) => res.json(group));
         } catch (e) {

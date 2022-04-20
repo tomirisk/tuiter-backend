@@ -6,7 +6,7 @@ import User from "../models/users/user";
  */
 export default interface GroupDaoI {
     findAllUserGroups (uid: string): Promise<Group[]>;
-    createGroup (creatorUid: string, users: User[], group: Group): Promise<Group>;
+    createGroup (creatorUid: string, uids: string[], group: Group): Promise<Group>;
     deleteGroup (gid: string): Promise<any>;
     findGroupById (gid: string): Promise<any>;
     isUserInGroup (uid: string, gid: string): Promise<number>;
