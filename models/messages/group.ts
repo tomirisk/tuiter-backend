@@ -11,7 +11,8 @@ import mongoose from "mongoose";
  */
 export default interface Group {
     _id?: mongoose.Schema.Types.ObjectId,
-    name: string
+    name: string,
+    owner: User,
     users: User[],
     createdOn: Date
 };
