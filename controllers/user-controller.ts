@@ -5,6 +5,7 @@ import UserDao from "../daos/user-dao";
 import User from "../models/users/user";
 import {Express, Request, Response} from "express";
 import UserControllerI from "../interfaces/UserControllerI";
+import MessageDao from "../daos/message-dao";
 
 /**
  * @class UserController Implements RESTful Web service API for users resource.
@@ -23,6 +24,7 @@ import UserControllerI from "../interfaces/UserControllerI";
  */
 export default class UserController implements UserControllerI {
     private static userDao: UserDao = UserDao.getInstance();
+    private static messageDao: MessageDao = MessageDao.getInstance();
     private static userController: UserController | null = null;
 
     /**
@@ -55,8 +57,33 @@ export default class UserController implements UserControllerI {
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the user objects
      */
-    findAllUsers = (req: Request, res: Response) =>
-        UserController.userDao.findAllUsers().then((users: User[]) => res.json(users));
+    findAllUsers = async (req: Request, res: Response) => {
+        const users: User[] = await UserController.userDao.findAllUsers();
+
+        if (req.query.metadata && req.query.uid && req.query.metadata === "latest-message") {
+            // @ts-ignore
+            const uid = req.query.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.query.uid;
+            if(uid === "me"){
+                res.sendStatus(503);
+                return;
+            }
+
+            const metadata : any[] = [];
+            await Promise.all(users.map(async (user: User) => {
+                if (user._id) {
+                    const sentMessage = await UserController.messageDao.findMostRecentMessage(uid, String(user._id));
+                    const receivedMessage = await UserController.messageDao.findMostRecentMessage(String(user._id), uid);
+                    if (sentMessage || receivedMessage) {
+                        metadata.push({_id: user._id, latestMessage: !sentMessage ? receivedMessage : !receivedMessage ? sentMessage
+                            : sentMessage.sentOn > receivedMessage.sentOn ? sentMessage : receivedMessage});
+                    }
+                }
+            }));
+            res.json({users, metadata});
+        } else {
+            res.json(users);
+        }
+    }
 
     /**
      * Retrieves the user by their primary key

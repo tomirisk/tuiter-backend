@@ -1,8 +1,9 @@
 /**
  * @file GroupMessageController RESTful Web service API for group messages resource
  */
-import {Express} from "express";
+import {Express, Request, Response} from "express";
 import GroupMessageService from "../services/group-message-service";
+import {Server} from "socket.io";
 
 /**
  * @class GroupMessageController Implements RESTful Web service API for group messages resource.
@@ -23,15 +24,16 @@ export default class GroupMessageController {
 
     /**
      * Creates singleton controller instance
-     * @param {Express} app Express instance to declare the RESTful Web service
-     * API
+     * @param {Express} app Express instance to declare the RESTful Web service API
+     * @param {Server} socketIoServer socket io instance
      * @return GroupMessageController
      */
-    public static getInstance = (app: Express): GroupMessageController => {
+    public static getInstance = (app: Express, socketIoServer: Server): GroupMessageController => {
         if(GroupMessageController.groupMessageController === null) {
             GroupMessageController.groupMessageController = new GroupMessageController();
 
-            app.post("/api/groups/:gid/users/:uid/messages", GroupMessageController.groupMessageService.userSendsGroupMessage);
+            app.post("/api/groups/:gid/users/:uid/messages", (req: Request, res: Response) =>
+                GroupMessageController.groupMessageService.userSendsGroupMessage(req, res, socketIoServer));
             app.delete("/api/groups/:gid/messages/:mid", GroupMessageController.groupMessageService.userDeletesGroupMessage);
             app.get("/api/groups/:gid/messages", GroupMessageController.groupMessageService.findAllMessagesBetweenGroup);
             app.get("/api/groups/:gid/messages/:mid", GroupMessageController.groupMessageService.findGroupMessageById);

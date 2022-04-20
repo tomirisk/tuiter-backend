@@ -26,8 +26,8 @@ export default class MessageController {
 
     /**
      * Creates singleton controller instance
-     * @param {Express} app Express instance to declare the RESTful Web service
-     * API
+     * @param {Express} app Express instance to declare the RESTful Web service API
+     * @param {Server} socketIoServer socket io instance
      * @return MessageController
      */
     public static getInstance = (app: Express, socketIoServer: Server): MessageController => {

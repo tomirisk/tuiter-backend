@@ -32,7 +32,7 @@ export default class GroupDao implements GroupDaoI {
      * @returns Promise To be notified when the groups are retrieved from database
      */
     findAllUserGroups = async (uid: string): Promise<Group[]> => {
-        const groups = await GroupModel.find();
+        const groups = await GroupModel.find().populate("users");
         // @ts-ignore
         const userGroups = groups.filter(async group => await this.isUserInGroup(uid, group._id) === 1);
         return userGroups;

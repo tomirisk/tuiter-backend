@@ -93,4 +93,12 @@ export default class MessageDao implements MessageDaoI {
     uidRecipient: string
   ): Promise<Message[]> =>
     MessageModel.find({ sender: uidSender, recipient: uidRecipient }).exec();
+
+  /**
+   * Get the latest message sent by a user to another user
+   * @param uidSender sender's uid
+   * @param uidRecipient recipient's uid
+   */
+  findMostRecentMessage = async (uidSender: string, uidRecipient: string): Promise<any> =>
+    MessageModel.findOne({sender: uidSender, recipient: uidRecipient}).sort({sentOn: -1}).exec();
 }
