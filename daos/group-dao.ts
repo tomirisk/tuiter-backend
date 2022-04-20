@@ -46,8 +46,8 @@ export default class GroupDao implements GroupDaoI {
      * @param {Group} group Instance to be inserted into the database
      * @returns Promise To be notified when group is inserted into the database
      */
-    createGroup = async (creatorUid: string, users: User[], group: Group): Promise<Group> =>
-        GroupModel.create({ ...group, owner: creatorUid, users: users});
+    createGroup = async (creatorUid: string, uids: string[], group: Group): Promise<Group> =>
+        GroupModel.create({ ...group, users: uids, owner: creatorUid});
 
     /**
      * Uses GroupModel to retrieve a single group document with the given gid
