@@ -8,4 +8,5 @@ export default interface GroupMessageDaoI {
     userDeletesGroupMessage (mid: string): Promise<any>;
     findGroupMessageById (mid: string): Promise<any>;
     findAllMessagesBetweenGroup (groupId: string): Promise<GroupMessage[]>;
+    findMostRecentMessage (groupId: string) : Promise<any>;
 };

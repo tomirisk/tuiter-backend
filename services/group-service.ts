@@ -5,6 +5,7 @@ import {Request, Response} from "express";
 import GroupDao from "../daos/group-dao";
 import Group from "../models/messages/group";
 import GroupServiceI from "../interfaces/group-service-I";
+import GroupMessageDao from "../daos/group-message-dao";
 
 /**
  * @class GroupService Implements RESTful Web service API for group resource
@@ -14,6 +15,7 @@ import GroupServiceI from "../interfaces/group-service-I";
  */
 export default class GroupService implements GroupServiceI{
     private static groupDao: GroupDao = GroupDao.getInstance();
+    private static groupMessageDao: GroupMessageDao = GroupMessageDao.getInstance();
     private static groupService: GroupService | null = null;
 
     /**
@@ -104,7 +106,7 @@ export default class GroupService implements GroupServiceI{
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the group objects
      */
-    findAllUserGroups = (req: Request, res: Response) => {
+    findAllUserGroups = async (req: Request, res: Response) => {
         // @ts-ignore
         const userId = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
         if(userId === "me"){
@@ -113,7 +115,22 @@ export default class GroupService implements GroupServiceI{
         }
 
         try {
-            GroupService.groupDao.findAllUserGroups(userId).then((groups: Group[]) => res.json(groups));
+            const groups: Group[] = await GroupService.groupDao.findAllUserGroups(userId);
+
+            if (req.query.metadata && req.query.metadata === "latest-message") {
+                const metadata : any[] = [];
+                await Promise.all(groups.map(async (group: Group) => {
+                    if (group._id) {
+                        const latestMessage = await GroupService.groupMessageDao.findMostRecentMessage(String(group._id));
+                        if (latestMessage) {
+                            metadata.push({_id: group._id, latestMessage});
+                        }
+                    }
+                }));
+                res.json({groups, metadata});
+            } else {
+                res.json(groups)
+            }
         } catch (e) {
             console.log(e);
         }

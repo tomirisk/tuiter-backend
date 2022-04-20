@@ -64,5 +64,12 @@ export default class GroupMessageDao implements GroupMessageDaoI {
      * @returns Promise To be notified when the group messages are retrieved from database
      */
     findAllMessagesBetweenGroup = async (groupId: string): Promise<GroupMessage[]> =>
-        GroupMessageModel.find({group: groupId}).exec();
+        GroupMessageModel.find({group: groupId}).populate("sender").exec();
+
+    /**
+     * Get the latest message sent in the group
+     * @param groupId group id
+     */
+    findMostRecentMessage = async (groupId: string): Promise<any> =>
+        GroupMessageModel.findOne({group: groupId}).sort({sentOn: -1}).exec();
 }
