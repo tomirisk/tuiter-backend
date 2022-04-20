@@ -13,10 +13,11 @@ import mongoose from "mongoose";
  * @property {enum} attachments
  */
 export default interface Message {
-    _id?: mongoose.Schema.Types.ObjectId,
-    message: string,
-    sender: User,
-    recipient: User,
-    sentOn: Date,
-    attachmentKey?: string
-};
+  _id?: mongoose.Schema.Types.ObjectId;
+  message: string;
+  sender: User;
+  recipient: User;
+  sentOn: Date;
+  attachmentKey?: string;
+  pinned: boolean;
+}

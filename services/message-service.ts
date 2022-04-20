@@ -80,9 +80,11 @@ export default class MessageService implements MessageServiceI{
      * @param {Response} res Represents response to client, including status
      * on whether updating a message was successful or not
      */
-    userUpdatesMessage = (req: Request, res: Response) =>
+    userUpdatesMessage = (req: Request, res: Response) => 
         MessageService.messageDao.userUpdatesMessage(req.params.mid, req.body)
-            .then(status => res.send(status));
+        .then(status => res.send(status));
+    
+        
 
 
 
