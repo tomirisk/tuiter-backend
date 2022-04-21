@@ -69,28 +69,6 @@ export default class GroupService implements GroupServiceI{
             .then(status => res.send(status));
 
     /**
-     * Finds out if a user is part of a group
-     * @param {Request} req Represents request from client, including the path
-     * parameter uid, gid representing the current user and the group
-     * @param {Response} res Represents response to client, 1 or 0
-     */
-    isUserInGroup = (req: Request, res: Response) => {
-        // @ts-ignore
-        const userId = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
-        const gid = req.params.gid;
-
-        if(userId === "me"  || !gid){
-            res.sendStatus(503);
-            return;
-        }
-        try {
-            return GroupService.groupDao.isUserInGroup(userId, gid);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    /**
      * Retrieves one group with its id from the database
      * @param {Request} req Represents request from client
      * @param {Response} res Represents response to client, including the
