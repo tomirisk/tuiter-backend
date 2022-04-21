@@ -35,7 +35,6 @@ export default class GroupController {
             app.post("/api/users/:uid/groups", GroupController.groupService.createGroup);
             app.delete("/api/groups/:gid", GroupController.groupService.deleteGroup);
             app.get("/api/groups/:gid", GroupController.groupService.findGroupById);
-            app.get("/api/groups/:gid/users/:uid", GroupController.groupService.isUserInGroup);
             app.get("/api/users/:uid/groups", GroupController.groupService.findAllUserGroups);
             app.put("/api/groups/:gid", GroupController.groupService.updateGroup);
         }
