@@ -139,9 +139,9 @@ export default class StoryController implements StoryControllerI {
    */
   findStories = async (req: Request, res: Response) => {
     const stories = await StoryController.storyDao.findStories();
-    const twentyFourHours = new Date().getTime() + (24 * 60 * 60 * 1000);
     if (req.query.hours) {
-      const filteredStories = stories.filter((story) => twentyFourHours > story.postedOn.getTime());
+      const twentyFourHoursBefore = Date.now() - (parseInt(String(req.query.hours)) * 60 * 60 * 1000);
+      const filteredStories = stories.filter((story) => twentyFourHoursBefore < story.postedOn.getTime());
       return res.json(filteredStories);
     }
     else {
