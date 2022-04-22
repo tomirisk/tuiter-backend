@@ -140,8 +140,8 @@ export default class StoryController implements StoryControllerI {
   findStories = async (req: Request, res: Response) => {
     const stories = await StoryController.storyDao.findStories();
     if (req.query.hours) {
-      const twentyFourHoursBefore = Date.now() - (parseInt(String(req.query.hours)) * 60 * 60 * 1000);
-      const filteredStories = stories.filter((story) => twentyFourHoursBefore < story.postedOn.getTime());
+      const hoursOffset = Date.now() - (parseInt(String(req.query.hours)) * 60 * 60 * 1000);
+      const filteredStories = stories.filter((story) => hoursOffset < story.postedOn.getTime());
       return res.json(filteredStories);
     }
     else {
@@ -167,8 +167,8 @@ export default class StoryController implements StoryControllerI {
       const stories = await StoryController.storyDao.findStoriesVisibleToUser(userUid);
 
       if (req.query.hours) {
-        const twentyFourHoursBefore = Date.now() - (parseInt(String(req.query.hours)) * 60 * 60 * 1000);
-        const filteredStories = stories.filter((story) => twentyFourHoursBefore < story.postedOn.getTime());
+        const hoursOffset = Date.now() - (parseInt(String(req.query.hours)) * 60 * 60 * 1000);
+        const filteredStories = stories.filter((story) => hoursOffset < story.postedOn.getTime());
         return res.json(filteredStories);
       }
       else {
