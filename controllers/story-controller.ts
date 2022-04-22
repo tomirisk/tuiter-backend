@@ -137,8 +137,16 @@ export default class StoryController implements StoryControllerI {
    * @param {Response} res Represents response to client, including the
    * body formatted as JSON arrays containing the story objects
    */
-  findStories = (req: Request, res: Response) => {
-      StoryController.storyDao.findStories().then((stories: Story[]) => res.json(stories));
+  findStories = async (req: Request, res: Response) => {
+    const stories = await StoryController.storyDao.findStories();
+    if (req.query.hours) {
+      const hoursOffset = Date.now() - (parseInt(String(req.query.hours)) * 60 * 60 * 1000);
+      const filteredStories = stories.filter((story) => hoursOffset < story.postedOn.getTime());
+      return res.json(filteredStories);
+    }
+    else {
+     return res.json(stories);
+    }
   }
 
   /**
@@ -148,7 +156,7 @@ export default class StoryController implements StoryControllerI {
    * @param {Response} res Represents response to client, including the
    * body formatted as JSON arrays containing the story objects
    */
-  findStoriesVisibleToUser = (req: Request, res: Response) => {
+  findStoriesVisibleToUser = async (req: Request, res: Response) => {
     // @ts-ignore
     const userUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
     if(userUid === "me"){
@@ -156,7 +164,16 @@ export default class StoryController implements StoryControllerI {
       return;
     }
     try {
-      StoryController.storyDao.findStoriesVisibleToUser(userUid).then((stories: Story[]) => res.json(stories));
+      const stories = await StoryController.storyDao.findStoriesVisibleToUser(userUid);
+
+      if (req.query.hours) {
+        const hoursOffset = Date.now() - (parseInt(String(req.query.hours)) * 60 * 60 * 1000);
+        const filteredStories = stories.filter((story) => hoursOffset < story.postedOn.getTime());
+        return res.json(filteredStories);
+      }
+      else {
+        return res.json(stories);
+      }
     } catch (e) {
       console.log(e);
     }
