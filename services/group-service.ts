@@ -39,18 +39,18 @@ export default class GroupService implements GroupServiceI{
      * body formatted as JSON containing the new group that was inserted in the
      * database
      */
-    createGroup = (req: Request, res: Response) => {
+    createGroup = async (req: Request, res: Response) => {
         // @ts-ignore
         const creatorUid = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
-        const usersAddedIds = req.body.usersAddedIds;
-        const allUids = usersAddedIds.append(creatorUid);
 
-        if(creatorUid === "me" || !usersAddedIds){
+        if(creatorUid === "me"){
             res.sendStatus(503);
             return;
         }
+        req.body.users.push(creatorUid);
+
         try {
-            GroupService.groupDao.createGroup(creatorUid, allUids, req.body)
+            GroupService.groupDao.createGroup(creatorUid, req.body.users, req.body.group)
                 .then((group: Group) => res.json(group));
         } catch (e) {
             console.log(e);
@@ -67,28 +67,6 @@ export default class GroupService implements GroupServiceI{
     deleteGroup = (req: Request, res: Response) =>
         GroupService.groupDao.deleteGroup(req.params.gid)
             .then(status => res.send(status));
-
-    /**
-     * Finds out if a user is part of a group
-     * @param {Request} req Represents request from client, including the path
-     * parameter uid, gid representing the current user and the group
-     * @param {Response} res Represents response to client, 1 or 0
-     */
-    isUserInGroup = (req: Request, res: Response) => {
-        // @ts-ignore
-        const userId = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id : req.params.uid;
-        const gid = req.params.gid;
-
-        if(userId === "me"  || !gid){
-            res.sendStatus(503);
-            return;
-        }
-        try {
-            return GroupService.groupDao.isUserInGroup(userId, gid);
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     /**
      * Retrieves one group with its id from the database

@@ -33,9 +33,7 @@ export default class GroupDao implements GroupDaoI {
      */
     findAllUserGroups = async (uid: string): Promise<Group[]> => {
         const groups = await GroupModel.find().populate("users");
-        // @ts-ignore
-        const userGroups = groups.filter(async group => await this.isUserInGroup(uid, group._id) === 1);
-        return userGroups;
+        return groups.filter(group => group.users.filter(user => String(user._id) === uid).length > 0);
     }
 
     /**
@@ -46,7 +44,7 @@ export default class GroupDao implements GroupDaoI {
      * @returns Promise To be notified when group is inserted into the database
      */
     createGroup = async (creatorUid: string, uids: string[], group: Group): Promise<Group> =>
-        GroupModel.create({ ...group, owner:creatorUid, users: uids});
+        GroupModel.create({ ...group, users: uids, owner: creatorUid});
 
     /**
      * Uses GroupModel to retrieve a single group document with the given gid
@@ -67,21 +65,6 @@ export default class GroupDao implements GroupDaoI {
     deleteGroup = async (gid: string): Promise<any> => {
         GroupModel.deleteOne({_id: gid});
     }
-
-    /**
-     * Uses GroupModel and elemMatch to find if a user exists in
-     * the list of users tha make up the group.
-     * @param {string} uid user's primary key
-     * @param {string} gid group's primary key
-     * @returns Promise of 1 or 0, 1 returns the group instance indicating that
-     * the user exists in the group. If 0, the user doesn't exist in the group.
-     */
-    isUserInGroup = async (uid: string, gid: string): Promise<number> =>
-        GroupModel.find({_id: gid,
-            users: {
-            $elemMatch: {user: uid}
-        }
-        }).count().exec();
 
     /**
      * Updates group with new values in database
